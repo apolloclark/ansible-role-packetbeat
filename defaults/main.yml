@@ -1,0 +1,142 @@
+---
+# https://www.elastic.co/guide/en/beats/packetbeat/current/packetbeat-overview.html
+# https://www.elastic.co/guide/en/beats/packetbeat/current/configuring-howto-packetbeat.html
+# https://www.elastic.co/guide/en/beats/packetbeat/current/packetbeat-configuration.html
+elastic_url: "https://artifacts.elastic.co"
+
+# Overload variables using the dict named packetbeat
+packetbeat:
+  version: "latest"
+
+packetbeat_defaults:
+  deamon: "packetbeat"
+  version: "latest"
+  config_include_dir: "/etc/packetbeat/"
+
+  # https://www.elastic.co/guide/en/beats/packetbeat/current/configuration-general.html
+  # name: ""
+  # tags: ""
+  # fields: ""
+  # fields_under_root: "false"
+  # queue_size: 1000
+  # bulk_queue_size: 0
+  # max_procs: ""
+
+  # https://www.elastic.co/guide/en/beats/packetbeat/current/configuration-interfaces.html
+  interfaces:
+    device: "any"
+
+    # Optional
+    # snaplen: 65535
+    # type: pcap
+    # buffer_size_mb: 30
+    # with_vlans: ""
+    # bpf_filter: ""
+    # ignore_outgoing: ""
+
+  # https://www.elastic.co/guide/en/beats/packetbeat/current/configuration-protocols.html
+  # protocols:
+    # dns:
+      # ports: '[53]'
+      # include_authorities: true
+      # include_additionals: true
+      # send_request:  false
+      # send_response: false
+    # http:
+      # ports: '[80]'
+      # hide_keywords: ['pass', 'password', 'passwd']
+    # memcache:
+      # ports: [11211]
+      # parseunknown: true
+      # maxvalues: 0
+      # maxbytespervalue: "unlimited"
+      # udptransactiontimeout: 200
+    # mysql:
+      # ports: [3306]
+    # pgsql:
+      # ports: [5432]
+    # redis:
+      # ports: [6379]
+    # thrift:
+      # ports: [9090]
+    # mongodb:
+      # ports: [27017]
+
+
+  # https://www.elastic.co/guide/en/beats/packetbeat/current/configuration-processes.html
+  # procs:
+    #  enabled: false
+    #  monitored:
+    #    - process: mysqld
+    #      cmdline_grep: mysqld
+    #
+    #    - process: pgsql
+    #      cmdline_grep: postgres
+    #
+    #    - process: nginx
+    #      cmdline_grep: nginx
+    #
+    #    - process: app
+    #      cmdline_grep: gunicorn
+
+  output:
+    # https://www.elastic.co/guide/en/beats/packetbeat/current/elasticsearch-output.html
+    elasticsearch:
+      hosts: '["localhost:9200"]'
+      # protocol: "https"
+      # username: "elastic"
+      # password: "changeme"
+      # worker: 1
+      # index: "packetbeat"
+      # template:
+        # name: "packetbeat"
+        # path: "packetbeat.template.json"
+        # overwrite: "false"
+      # path: "/elasticsearch"
+      # proxy_url: http://proxy:3128
+      # max_retries: 3
+      # bulk_max_size: 50
+      # timeout: 90
+      # flush_interval: 1
+      # save_topology: false
+      # topology_expire: 15
+      # tls:
+        # certificate_authorities: ["/etc/pki/root/ca.pem"]
+        # certificate: "/etc/pki/client/cert.pem"
+        # certificate_key: "/etc/pki/client/cert.key"
+        # insecure: true
+        # cipher_suites: []
+        # curve_types: []
+        # min_version: 1.0
+        # max_version: 1.2
+
+    # https://www.elastic.co/guide/en/beats/packetbeat/current/logstash-output.html
+    # logstash:
+      # hosts: '["localhost:9200"]'
+      # worker: 1
+      # bulk_max_size: 2048
+      # compression_level: 3
+      # loadbalance: "true"
+      # index: "packetbeat"
+      # tls:
+        # certificate_authorities: ["/etc/pki/root/ca.pem"]
+        # certificate: "/etc/pki/client/cert.pem"
+        # certificate_key: "/etc/pki/client/cert.key"
+        # insecure: true
+        # cipher_suites: []
+        # curve_types: []
+ 
+  # https://www.elastic.co/guide/en/beats/packetbeat/current/configuration-logging.html
+  logging:
+    level: "info"
+    selectors: '["*"]'
+    to_syslog: "false"
+    to_files: "true"
+    files:
+      path: "/var/log/packetbeat"
+      name: "packetbeat.log"
+      rotateeverybytes: 10485760
+      keepfiles: 7
+    metrics:
+      enabled: "true"
+      period: "30s"
