@@ -9,7 +9,7 @@ packetbeat:
   version: "latest"
 
 packetbeat_defaults:
-  deamon: "packetbeat"
+  daemon: "packetbeat"
   version: "latest"
   config_include_dir: "/etc/packetbeat/"
 
