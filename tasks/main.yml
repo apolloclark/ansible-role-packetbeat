@@ -53,4 +53,9 @@
     owner: root
     group: root
     mode: 0644
-  notify: restart packetbeat
+
+- name: Restart Packetbeat
+  service:
+    name: "{{ packetbeat_combined.daemon }}"
+    state: restarted
+    sleep: 15

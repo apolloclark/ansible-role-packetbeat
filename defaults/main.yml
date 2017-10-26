@@ -35,32 +35,62 @@ packetbeat_defaults:
     # ignore_outgoing: ""
 
   # https://www.elastic.co/guide/en/beats/packetbeat/current/configuration-protocols.html
-  # protocols:
-    # dns:
-      # ports: '[53]'
-      # include_authorities: true
-      # include_additionals: true
-      # send_request:  false
-      # send_response: false
-    # http:
-      # ports: '[80]'
-      # hide_keywords: ['pass', 'password', 'passwd']
-    # memcache:
-      # ports: [11211]
-      # parseunknown: true
-      # maxvalues: 0
-      # maxbytespervalue: "unlimited"
-      # udptransactiontimeout: 200
-    # mysql:
-      # ports: [3306]
-    # pgsql:
-      # ports: [5432]
-    # redis:
-      # ports: [6379]
-    # thrift:
-      # ports: [9090]
-    # mongodb:
-      # ports: [27017]
+  protocols:
+    icmp:
+      enabled: "true"
+    dns:
+      enabled: "true"
+      ports: '[53]'
+      send_request:  "false"
+      send_response: "false"
+      
+      include_authorities: "true"
+      include_additionals: "true"
+    http:
+      enabled: "false"
+      ports: '[80]'
+      send_response: "true"
+      send_request: "true"
+      transaction_timeout: ""
+      
+      hide_keywords: '["pass", "password", "passwd"]'
+      redact_authorization: "true"
+      send_headers: '["User-Agent", "Cookie", "Set-Cookie"]'
+      send_all_headers: "false"
+      include_body_for: '["text/html"]'
+      split_cookie: "true"
+      real_ip_header: "X-Forwarded-For"
+      max_message_size: 10485760
+    mysql:
+      enabled: "false"
+      ports: '[3306]'
+    pgsql:
+      enabled: "false"
+      ports: '[5432]'
+    memcache:
+      enabled: "false"
+      ports: '[11211]'
+      parseunknown: "true"
+      maxvalues: 0
+      maxbytespervalue: -1
+      udptransactiontimeout: 200
+    redis:
+      enabled: "false"
+      ports: '[6379]'
+    mongodb:
+      enabled: "false"
+      ports: '[27017]'
+    cassandra:
+      enabled: "false"
+    amqp:
+      enabled: "false"
+      max_body_length: 1000
+      parse_headers: "true"
+      parse_arguments: "true"
+      hide_connection_information: "true"
+    thrift:
+      enabled: "false"
+      ports: '[9090]'
 
 
   # https://www.elastic.co/guide/en/beats/packetbeat/current/configuration-processes.html

@@ -8,268 +8,407 @@
 # application components. It inserts meta-data about each transaction into
 # Elasticsearch.
 
-########################### General ########################################
-#
-#
-# https://www.elastic.co/guide/en/beats/packetbeat/current/configuration-general.html
-#
+packetbeat:
+  ########################### General ########################################
+  #
+  #
+  # https://www.elastic.co/guide/en/beats/packetbeat/current/configuration-general.html
+  #
 
 {% if 'name' in packetbeat_combined %}
-# The name of the shipper that publishes the network data. It can be used to group
-# all the transactions sent by a single shipper in the web interface. Default
-# is the hostname.
-name: "{{ packetbeat_combined.name }}"
+  # The name of the shipper that publishes the network data. It can be used to group
+  # all the transactions sent by a single shipper in the web interface. Default
+  # is the hostname.
+  name: "{{ packetbeat_combined.name }}"
 {% endif %}
 
-
 {% if 'tags' in packetbeat_combined %}
-# The tags of the shipper are included in their own field with each
-# transaction published.
-tags: "{{ packetbeat_combined.tags }}"
+  # The tags of the shipper are included in their own field with each
+  # transaction published.
+  tags: "{{ packetbeat_combined.tags }}"
 {% endif %}
 
 {% if 'fields' in packetbeat_combined %}
-# Optional fields that you can specify to add additional information to the
-# output.
-fields:
+  # Optional fields that you can specify to add additional information to the
+  # output.
+  fields:
 {% for field in packetbeat_combined.fields %}
-  {{ field }}
+    {{ field }}
 {% endfor %}
 {% endif %}
 
 {% if 'fields_under_root' in packetbeat_combined %}
-# If this option is set to true, the custom fields are stored as top-level
-# fields in the output document instead of being grouped under a fields
-# sub-dictionary. If the custom field names conflict with other field names,
-# then the custom fields overwrite the other fields. The default value is false.
-fields_under_root: "{{ packetbeat_combined.fields_under_root }}"
+  # If this option is set to true, the custom fields are stored as top-level
+  # fields in the output document instead of being grouped under a fields
+  # sub-dictionary. If the custom field names conflict with other field names,
+  # then the custom fields overwrite the other fields. The default value is false.
+  fields_under_root: "{{ packetbeat_combined.fields_under_root }}"
 {% endif %}
 
 {% if 'queue_size' in packetbeat_combined %}
-# The internal queue size for single events in the processing pipeline. 
-# The default value is 1000.
-queue_size: {{ packetbeat_combined.queue_size }}
+  # The internal queue size for single events in the processing pipeline. 
+  # The default value is 1000.
+  queue_size: {{ packetbeat_combined.queue_size }}
 {% endif %}
 
 {% if 'bulk_queue_size' in packetbeat_combined %}
-# (DO NOT TOUCH) The internal queue size for bulk events in the processing
-# pipeline. The default value is 0.
-bulk_queue_size: {{ packetbeat_combined.bulk_queue_size }}
+  # (DO NOT TOUCH) The internal queue size for bulk events in the processing
+  # pipeline. The default value is 0.
+  bulk_queue_size: {{ packetbeat_combined.bulk_queue_size }}
 {% endif %}
 
 {% if 'max_procs' in packetbeat_combined and packetbeat_combined.max_procs %}
-# Sets the maximum number of CPUs that can be executing simultaneously. The
-# default is the number of logical CPUs available in the system.
-max_procs: {{ packetbeat_combined.max_procs }}
+  # Sets the maximum number of CPUs that can be executing simultaneously. The
+  # default is the number of logical CPUs available in the system.
+  max_procs: {{ packetbeat_combined.max_procs }}
 {% endif %}
 
 
 
 
 
-########################### Interfaces ########################################
-#
-# https://www.elastic.co/guide/en/beats/packetbeat/current/configuration-interfaces.html
-#
+  ########################### Interfaces ########################################
+  #
+  # https://www.elastic.co/guide/en/beats/packetbeat/current/configuration-interfaces.html
+  #
 
-interfaces:
-  # Select the network interfaces to sniff the data. You can use the "any"
-  # keyword to sniff on all connected interfaces.
-  device: "{{ packetbeat_combined.interfaces.device }}"
+  interfaces:
+    # Select the network interfaces to sniff the data. You can use the "any"
+    # keyword to sniff on all connected interfaces.
+    device: "{{ packetbeat_combined.interfaces.device }}"
 
 {% if 'snaplen' in packetbeat_combined.interfaces %}
-  # The maximum size of the packets to capture. The default is 65535, which is
-  # large enough for almost all networks and interface types. If you sniff on a
-  # physical network interface, the optimal setting is the MTU size. On virtual
-  # interfaces, however, it’s safer to accept the default value.
-  snaplen: {{ packetbeat_combined.interfaces.snaplen }}
+    # The maximum size of the packets to capture. The default is 65535, which is
+    # large enough for almost all networks and interface types. If you sniff on a
+    # physical network interface, the optimal setting is the MTU size. On virtual
+    # interfaces, however, it’s safer to accept the default value.
+    snaplen: {{ packetbeat_combined.interfaces.snaplen }}
 {% endif %}
 
 {% if 'type' in packetbeat_combined.interfaces %}
-  # Packetbeat supports three sniffer types:
-  # - pcap, which uses the libpcap library and works on most platforms, but it’s
-  #   not the fastest option.
-  # - af_packet, which uses memory-mapped sniffing. This option is faster than
-  #   libpcap and doesn’t require a kernel module, but it’s Linux-specific.
-  # - pf_ring, which makes use of an ntop.org project. This setting provides
-  #   the best sniffing speed, but it requires a kernel module, and it’s Linux-specific.
-  # Note
-  # The pf_ring option requires re-compilation of Packetbeat and is not
-  # officially supported by Elastic at this moment. The default sniffer type is pcap.
-  type: "{{ packetbeat_combined.interfaces.type }}"
+    # Packetbeat supports three sniffer types:
+    # - pcap, which uses the libpcap library and works on most platforms, but it’s
+    #   not the fastest option.
+    # - af_packet, which uses memory-mapped sniffing. This option is faster than
+    #   libpcap and doesn’t require a kernel module, but it’s Linux-specific.
+    # - pf_ring, which makes use of an ntop.org project. This setting provides
+    #   the best sniffing speed, but it requires a kernel module, and it’s Linux-specific.
+    # Note
+    # The pf_ring option requires re-compilation of Packetbeat and is not
+    # officially supported by Elastic at this moment. The default sniffer type is pcap.
+    type: "{{ packetbeat_combined.interfaces.type }}"
 {% endif %}
 
 {% if 'buffer_size_mb' in packetbeat_combined.interfaces %}
-  # The maximum size of the shared memory buffer to use between the kernel and
-  # user space. A bigger buffer usually results in lower CPU usage, but consumes
-  # more memory. This setting is only available for the af_packet sniffer type.
-  # The default is 30 MB.
-  buffer_size_mb: {{ packetbeat_combined.interfaces.buffer_size_mb }}
+    # The maximum size of the shared memory buffer to use between the kernel and
+    # user space. A bigger buffer usually results in lower CPU usage, but consumes
+    # more memory. This setting is only available for the af_packet sniffer type.
+    # The default is 30 MB.
+    buffer_size_mb: {{ packetbeat_combined.interfaces.buffer_size_mb }}
 {% endif %}
 
 {% if 'with_vlans' in packetbeat_combined.interfaces %}
-  # Packetbeat automatically generates a BPF for capturing only the traffic on
-  # ports where it expects to find known protocols. For example, if you have
-  # configured port 80 for HTTP and port 3306 for MySQL, Packetbeat generates
-  # the following BPF filter: "port 80 or port 3306".
-  #
-  # However, if the traffic contains VLAN tags, the filter that Packetbeat
-  # generates is ineffective because the offset is moved by four bytes. To fix
-  # this, you can enable the with_vlans option, which generates a BPF filter
-  # that looks like this: "port 80 or port 3306 or (vlan and (port 80 or port 3306))".
-  with_vlans: "{{ packetbeat_combined.interfaces.with_vlans }}"
+    # Packetbeat automatically generates a BPF for capturing only the traffic on
+    # ports where it expects to find known protocols. For example, if you have
+    # configured port 80 for HTTP and port 3306 for MySQL, Packetbeat generates
+    # the following BPF filter: "port 80 or port 3306".
+    #
+    # However, if the traffic contains VLAN tags, the filter that Packetbeat
+    # generates is ineffective because the offset is moved by four bytes. To fix
+    # this, you can enable the with_vlans option, which generates a BPF filter
+    # that looks like this: "port 80 or port 3306 or (vlan and (port 80 or port 3306))".
+    with_vlans: "{{ packetbeat_combined.interfaces.with_vlans }}"
 {% endif %}
 
 {% if 'bpf_filter' in packetbeat_combined.interfaces %}
-  # Packetbeat automatically generates a BPF for capturing only the traffic on
-  # ports where it expects to find known protocols. For example, if you have
-  # configured port 80 for HTTP and port 3306 for MySQL, Packetbeat generates
-  # the following BPF filter: "port 80 or port 3306".
-  bpf_filter: "{{ packetbeat_combined.interfaces.bpf_filter }}"
+    # Packetbeat automatically generates a BPF for capturing only the traffic on
+    # ports where it expects to find known protocols. For example, if you have
+    # configured port 80 for HTTP and port 3306 for MySQL, Packetbeat generates
+    # the following BPF filter: "port 80 or port 3306".
+    bpf_filter: "{{ packetbeat_combined.interfaces.bpf_filter }}"
 {% endif %}
 
 {% if 'ignore_outgoing' in packetbeat_combined.interfaces %}
-  # If the ignore_outgoing option is enabled, Packetbeat ignores all the
-  # transactions initiated from the server running Packetbeat.
+    # If the ignore_outgoing option is enabled, Packetbeat ignores all the
+    # transactions initiated from the server running Packetbeat.
+    #
+    # This is useful when two Packetbeat instances publish the same transactions.
+    # Because one Packetbeat sees the transaction in its outgoing queue and the
+    # other sees it in its incoming queue, you can end up with duplicate
+    # transactions. To remove the duplicates, you can enable the
+    # packetbeat.ignore_outgoing option on one of the servers.
+    ignore_outgoing: "{{ packetbeat_combined.interfaces.ignore_outgoing }}"
+{% endif %}
+
+
+
+
+
+  ############################# Protocols #######################################
   #
-  # This is useful when two Packetbeat instances publish the same transactions.
-  # Because one Packetbeat sees the transaction in its outgoing queue and the
-  # other sees it in its incoming queue, you can end up with duplicate
-  # transactions. To remove the duplicates, you can enable the
-  # packetbeat.ignore_outgoing option on one of the servers.
-  ignore_outgoing: "{{ packetbeat_combined.interfaces.ignore_outgoing }}"
-{% endif %}
-
-
-
-
-
-############################# Protocols #######################################
-#
-# https://www.elastic.co/guide/en/beats/packetbeat/current/configuration-protocols.html
-#
+  # https://www.elastic.co/guide/en/beats/packetbeat/current/configuration-protocols.html
+  #
 {% if 'protocols' in packetbeat_combined %}
-protocols:
-{% if 'dns' in packetbeat_combined.protocols %}
-  dns:
-    # Configure the ports where to listen for DNS traffic. You can disable
-    # the DNS protocol by commenting out the list of ports.
-    ports: "{{ packetbeat_combined.protocols.dns.ports }}"
+  protocols:
 
-{% if 'include_authorities' in packetbeat_combined.protocols.dns %}
-    # include_authorities controls whether or not the dns.authorities field
-    # (authority resource records) is added to messages.
-    # Default: false
-    include_authorities: "{{ packetbeat_combined.protocols.dns.include_authorities }}"
+{% if 'icmp' in packetbeat_combined.protocols %}
+    #
+    #------------------------------------ ICMP -----------------------------------
+    #
+    # https://www.elastic.co/guide/en/beats/packetbeat/current/configuration-protocols.html#_icmp_configuration_options
+    icmp:
+{% if 'enabled' in packetbeat_combined.protocols.icmp %}
+      # The ICMP protocol can be enabled/disabled via this option.
+      # The default is true.
+      #
+      # If enabled Packetbeat will generate the following BPF filter: "icmp or icmp6".
+      enabled:  "{{ packetbeat_combined.protocols.icmp.enabled }}"
 {% endif %}
 
-{% if 'include_additionals' in packetbeat_combined.protocols.dns %}
-    # include_additionals controls whether or not the dns.additionals field
-    # (additional resource records) is added to messages.
-    # Default: false
-    include_additionals: "{{ packetbeat_combined.protocols.dns.include_additionals }}"
+{% endif %}
+
+
+
+{% if 'dns' in packetbeat_combined.protocols %}
+    #
+    #------------------------------------- DNS -----------------------------------
+    #
+    # https://www.elastic.co/guide/en/beats/packetbeat/current/configuration-protocols.html#_dns_configuration_options
+    dns:
+
+{% if 'enabled' in packetbeat_combined.protocols.dns %}
+      # The enabled setting is a boolean setting to enable or disable protocols
+      # without having to comment out configuration sections. If set to false,
+      # the protocol is disabled.
+      #
+      # The default value is true.
+      enabled:  "{{ packetbeat_combined.protocols.dns.enabled }}"
+{% endif %}
+
+{% if 'ports' in packetbeat_combined.protocols.dns %}
+      # Configure the ports where to listen for DNS traffic. You can disable
+      # the DNS protocol by commenting out the list of ports.
+      ports: {{ packetbeat_combined.protocols.dns.ports }}
 {% endif %}
 
 {% if 'send_request' in packetbeat_combined.protocols.dns %}
-    # send_request and send_response control whether or not the stringified DNS
-    # request and response message are added to the result.
-    # Nearly all data about the request/response is available in the dns.*
-    # fields, but this can be useful if you need visibility specifically
-    # into the request or the response.
-    # Default: false
-    send_request:  "{{ packetbeat_combined.protocols.dns.send_request }}"
+      # send_request and send_response control whether or not the stringified DNS
+      # request and response message are added to the result.
+      # Nearly all data about the request/response is available in the dns.*
+      # fields, but this can be useful if you need visibility specifically
+      # into the request or the response.
+      # Default: false
+      send_request:  "{{ packetbeat_combined.protocols.dns.send_request }}"
 {% endif %}
 {% if 'send_response' in packetbeat_combined.protocols.dns %}
-    send_response: "{{ packetbeat_combined.protocols.dns.send_response }}"
+      send_response: "{{ packetbeat_combined.protocols.dns.send_response }}"
 {% endif %}
+  
+{% if 'include_authorities' in packetbeat_combined.protocols.dns %}
+      # include_authorities controls whether or not the dns.authorities field
+      # (authority resource records) is added to messages.
+      # Default: false
+      include_authorities: "{{ packetbeat_combined.protocols.dns.include_authorities }}"
 {% endif %}
+
+{% if 'include_additionals' in packetbeat_combined.protocols.dns %}
+      # include_additionals controls whether or not the dns.additionals field
+      # (additional resource records) is added to messages.
+      # Default: false
+      include_additionals: "{{ packetbeat_combined.protocols.dns.include_additionals }}"
+{% endif %}
+
+{% endif %}
+
+
 
 {% if 'http' in packetbeat_combined.protocols %}
-  http:
-    # Configure the ports where to listen for HTTP traffic. You can disable
-    # the HTTP protocol by commenting out the list of ports.
-    ports: {{ packetbeat_combined.protocols.http.ports }}
+    #
+    #--------------------------------- HTTP --------------------------------------
+    #
+    # https://www.elastic.co/guide/en/beats/packetbeat/current/configuration-protocols.html#_http_configuration_options
+    http:
+
+{% if 'enabled' in packetbeat_combined.protocols.http %}
+      # The enabled setting is a boolean setting to enable or disable protocols
+      # without having to comment out configuration sections. If set to false,
+      # the protocol is disabled.
+      #
+      # The default value is true.
+      enabled:  "{{ packetbeat_combined.protocols.http.enabled }}"
+{% endif %}
+
+{% if 'ports' in packetbeat_combined.protocols.http %}
+      # Configure the ports where to listen for HTTP traffic. You can disable
+      # the HTTP protocol by commenting out the list of ports.
+      ports: {{ packetbeat_combined.protocols.http.ports }}
+{% endif %}
+
+{% if 'send_request' in packetbeat_combined.protocols.http %}
+      # If this option is enabled, the raw message of the request (request field)
+      # is sent to Elasticsearch. The default is false. This option is useful
+      # when you want to index the whole request. The default value is false.
+      #
+      # Note that for HTTP, the body is not included by default, only the HTTP headers.
+      send_request:  "{{ packetbeat_combined.protocols.http.send_request }}"
+{% endif %}
+
+{% if 'send_response' in packetbeat_combined.protocols.http %}
+      # If this option is enabled, the raw message of the response (response
+      # field) is sent to Elasticsearch. The default is false. This option is
+      # useful when you want to index the whole response.
+      # 
+      # Note that for HTTP, the body is not included by default, only the HTTP headers.
+      send_response: "{{ packetbeat_combined.protocols.http.send_response }}"
+{% endif %}
 
 {% if 'hide_keywords' in packetbeat_combined.protocols.http %}
-    # Uncomment the following to hide certain parameters in URL or forms attached
-    # to HTTP requests. The names of the parameters are case insensitive.
-    # The value of the parameters will be replaced with the 'xxxxx' string.
-    # This is generally useful for avoiding storing user passwords or other
-    # sensitive information.
-    # Only query parameters and top level form parameters are replaced.
-    hide_keywords: {{ packetbeat_combined.protocols.http.hide_keywords }}
+      # Uncomment the following to hide certain parameters in URL or forms attached
+      # to HTTP requests. The names of the parameters are case insensitive.
+      # The value of the parameters will be replaced with the 'xxxxx' string.
+      # This is generally useful for avoiding storing user passwords or other
+      # sensitive information.
+      # Only query parameters and top level form parameters are replaced.
+      hide_keywords: {{ packetbeat_combined.protocols.http.hide_keywords }}
 {% endif %}
+
+{% if 'redact_authorization' in packetbeat_combined.protocols.http %}
+      # When this option is enabled, Packetbeat obscures the value of
+      # Authorization and Proxy-Authorization HTTP headers, and censors those
+      # strings in the response.
+      # 
+      # You should set this option to true for transactions that use Basic
+      # Authentication because they may contain the base64 unencrypted username
+      # and password.
+      redact_authorization: "{{ packetbeat_combined.protocols.http.redact_authorization }}"
 {% endif %}
+
+{% if 'send_headers' in packetbeat_combined.protocols.http %}
+      # A list of header names to capture and send to Elasticsearch. These headers
+      # are placed under the headers dictionary in the resulting JSON.
+      send_headers: {{ packetbeat_combined.protocols.http.send_headers }}
+{% endif %}
+
+{% if 'send_all_headers' in packetbeat_combined.protocols.http %}
+      # Instead of sending a white list of headers to Elasticsearch, you can
+      # send all headers by setting this option to true. The default is false.
+      send_all_headers: "{{ packetbeat_combined.protocols.http.send_all_headers }}"
+{% endif %}
+
+{% if 'include_body_for' in packetbeat_combined.protocols.http %}
+      # The list of content types for which Packetbeat exports the full HTTP
+      # payload. The HTTP body is available under http.request.body and
+      # http.response.body for these Content-Types.
+      # 
+      # In addition, if send_response option is enabled, then the HTTP body is
+      # exported together with the HTTP headers under response and if
+      # send_request enabled, then request contains the entire HTTP message
+      # including the body.
+      include_body_for: {{ packetbeat_combined.protocols.http.include_body_for }}
+{% endif %}
+
+{% if 'split_cookie' in packetbeat_combined.protocols.http %}
+      # If the Cookie or Set-Cookie headers are sent, this option controls
+      # whether they are split into individual values.
+      # 
+      # The default is false.
+      split_cookie: "{{ packetbeat_combined.protocols.http.split_cookie }}"
+{% endif %}
+
+{% if 'real_ip_header' in packetbeat_combined.protocols.http %}
+      # The header field to extract the real IP from. This setting is useful
+      # when you want to capture traffic behind a reverse proxy, but you want
+      # to get the geo-location information. If this header is present and
+      # contains a valid IP addresses, the information is used for the
+      # real_ip field.
+      real_ip_header: "{{ packetbeat_combined.protocols.http.real_ip_header }}"
+{% endif %}
+
+{% if 'max_message_size' in packetbeat_combined.protocols.http %}
+      # If an individual HTTP message is larger than this setting (in bytes),
+      # it will be trimmed to this size. Unless this value is very small (<1.5K),
+      # Packetbeat is able to still correctly follow the transaction and create
+      # an event for it. The default is 10485760 (10 MB).
+      max_message_size: {{ packetbeat_combined.protocols.http.max_message_size }}
+{% endif %}
+  
+{% endif %}
+
+
 
 {% if 'memcache' in packetbeat_combined.protocols %}
-  memcache:
-    # Configure the ports where to listen for memcache traffic. You can disable
-    # the Memcache protocol by commenting out the list of ports.
-    ports: {{ packetbeat_combined.protocols.memcache.ports }}
+    #
+    #------------------------------- Memcache ------------------------------------
+    #
+    # https://www.elastic.co/guide/en/beats/packetbeat/current/configuration-protocols.html#_memcache_configuration_options
+    memcache:
+      # Configure the ports where to listen for memcache traffic. You can disable
+      # the Memcache protocol by commenting out the list of ports.
+      ports: {{ packetbeat_combined.protocols.memcache.ports }}
 
-    # Uncomment the parseunknown option to force the memcache text protocol parser
-    # to accept unknown commands.
-    # Note: All unknown commands MUST not contain any data parts!
-    # Default: false
-    parseunknown: {{ packetbeat_combined.protocols.memcache.parseunknown }}
+      # Uncomment the parseunknown option to force the memcache text protocol parser
+      # to accept unknown commands.
+      # Note: All unknown commands MUST not contain any data parts!
+      # Default: false
+      parseunknown: {{ packetbeat_combined.protocols.memcache.parseunknown }}
 
-    # Update the maxvalue option to store the values - base64 encoded - in the
-    # json output.
-    # possible values:
-    #    maxvalue: -1  # store all values (text based protocol multi-get)
-    #    maxvalue: 0   # store no values at all
-    #    maxvalue: N   # store up to N values
-    # Default: 0
-    maxvalues: {{ packetbeat_combined.protocols.memcache.maxvalues }}
+      # Update the maxvalue option to store the values - base64 encoded - in the
+      # json output.
+      # possible values:
+      #    maxvalue: -1  # store all values (text based protocol multi-get)
+      #    maxvalue: 0   # store no values at all
+      #    maxvalue: N   # store up to N values
+      # Default: 0
+      maxvalues: {{ packetbeat_combined.protocols.memcache.maxvalues }}
 
-    # Use maxbytespervalue to limit the number of bytes to be copied per value element.
-    # Note: Values will be base64 encoded, so actual size in json document
-    #       will be 4 times maxbytespervalue.
-    # Default: unlimited
-    maxbytespervalue: "{{ packetbeat_combined.protocols.memcache.maxbytespervalue }}"
-
-    # UDP transaction timeout in milliseconds.
-    # Note: Quiet messages in UDP binary protocol will get response only in error case.
-    #       The memcached analyzer will wait for udptransactiontimeout milliseconds
-    #       before publishing quiet messages. Non quiet messages or quiet requests with
-    #       error response will not have to wait for the timeout.
-    # Default: 200
-    udptransactiontimeout: {{ packetbeat_combined.protocols.memcache.udptransactiontimeout }}
+      # Use maxbytespervalue to limit the number of bytes to be copied per value element.
+      # Note: Values will be base64 encoded, so actual size in json document
+      #       will be 4 times maxbytespervalue.
+      # Default: unlimited
+      maxbytespervalue: {{ packetbeat_combined.protocols.memcache.maxbytespervalue }}
+  
+      # UDP transaction timeout in milliseconds.
+      # Note: Quiet messages in UDP binary protocol will get response only in error case.
+      #       The memcached analyzer will wait for udptransactiontimeout milliseconds
+      #       before publishing quiet messages. Non quiet messages or quiet requests with
+      #       error response will not have to wait for the timeout.
+      # Default: 200
+      udptransactiontimeout: {{ packetbeat_combined.protocols.memcache.udptransactiontimeout }}
 {% endif %}
 
 {% if 'mysql' in packetbeat_combined.protocols %}
-  mysql:
-    # Configure the ports where to listen for MySQL traffic. You can disable
-    # the MySQL protocol by commenting out the list of ports.
-    ports: {{ packetbeat_combined.protocols.mysql.ports }}
+    mysql:
+      # Configure the ports where to listen for MySQL traffic. You can disable
+      # the MySQL protocol by commenting out the list of ports.
+      ports: {{ packetbeat_combined.protocols.mysql.ports }}
 {% endif %}
 
 {% if 'pgsql' in packetbeat_combined.protocols %}
-  pgsql:
-    # Configure the ports where to listen for Pgsql traffic. You can disable
-    # the Pgsql protocol by commenting out the list of ports.
-    ports: {{ packetbeat_combined.protocols.pgsql.ports }}
+    pgsql:
+      # Configure the ports where to listen for Pgsql traffic. You can disable
+      # the Pgsql protocol by commenting out the list of ports.
+      ports: {{ packetbeat_combined.protocols.pgsql.ports }}
 {% endif %}
 
 {% if 'redis' in packetbeat_combined.protocols %}
-  redis:
-    # Configure the ports where to listen for Redis traffic. You can disable
-    # the Redis protocol by commenting out the list of ports.
-    ports: {{ packetbeat_combined.protocols.redis.ports }}
+    redis:
+      # Configure the ports where to listen for Redis traffic. You can disable
+      # the Redis protocol by commenting out the list of ports.
+      ports: {{ packetbeat_combined.protocols.redis.ports }}
 {% endif %}
 
 {% if 'thrift' in packetbeat_combined.protocols %}
-  thrift:
-    # Configure the ports where to listen for Thrift-RPC traffic. You can disable
-    # the Thrift-RPC protocol by commenting out the list of ports.
-    ports: {{ packetbeat_combined.protocols.thrift.ports }}
+    thrift:
+      # Configure the ports where to listen for Thrift-RPC traffic. You can disable
+      # the Thrift-RPC protocol by commenting out the list of ports.
+      ports: {{ packetbeat_combined.protocols.thrift.ports }}
 {% endif %}
 
 {% if 'mongodb' in packetbeat_combined.protocols %}
-  mongodb:
-    # Configure the ports where to listen for MongoDB traffic. You can disable
-    # the MongoDB protocol by commenting out the list of ports.
-    ports: {{ packetbeat_combined.protocols.mongodb.ports }}
+    mongodb:
+      # Configure the ports where to listen for MongoDB traffic. You can disable
+      # the MongoDB protocol by commenting out the list of ports.
+      ports: {{ packetbeat_combined.protocols.mongodb.ports }}
 {% endif %}
 
 {% endif %}
@@ -278,27 +417,27 @@ protocols:
 
 
 
-############################# Processes #######################################
-#
-# https://www.elastic.co/guide/en/beats/packetbeat/current/configuration-processes.html
-#
+  ############################# Processes #######################################
+  #
+  # https://www.elastic.co/guide/en/beats/packetbeat/current/configuration-processes.html
+  #
 {% if 'procs' in packetbeat_combined %}
-# Configure the processes to be monitored and how to find them. If a process is
-# monitored then Packetbeat attempts to use it's name to fill in the `proc` and
-# `client_proc` fields.
-# The processes can be found by searching their command line by a given string.
-#
-# Process matching is optional and can be enabled by uncommenting the following
-# lines.
-#
-procs:
+  # Configure the processes to be monitored and how to find them. If a process is
+  # monitored then Packetbeat attempts to use it's name to fill in the `proc` and
+  # `client_proc` fields.
+  # The processes can be found by searching their command line by a given string.
+  #
+  # Process matching is optional and can be enabled by uncommenting the following
+  # lines.
+  #
+  procs:
 {% if 'enabled' in packetbeat_combined.procs %}
-  enabled: {{ packetbeat_combined.procs.enabled }}
+    enabled: {{ packetbeat_combined.procs.enabled }}
 {% endif %}
-  monitored:
+    monitored:
 {% for program in packetbeat_combined.procs.monitored %}
-    - process: {{ program.process }}
-      cmdline_grep: {{ program.cmdline_grep }}
+      - process: {{ program.process }}
+        cmdline_grep: {{ program.cmdline_grep }}
 {% endfor %}
 {% endif %}
 
@@ -437,6 +576,7 @@ output:
 {% endif %}
 
 
+
 {% if 'logstash' in packetbeat_combined.output %}
   # https://www.elastic.co/guide/en/beats/packetbeat/current/logstash-output.html
   logstash:
@@ -505,6 +645,7 @@ output:
 {% endif %}
 
 
+
 {% if 'file' in packetbeat_combined.output %}
   ### File output
   file:
@@ -563,7 +704,7 @@ logging:
   # Write all logging output to files. Beats automatically rotate files if rotateeverybytes
   # limit is reached.
   to_files: {{ packetbeat_combined.logging.to_files }}
-  
+
   # To enable logging to files, to_files option has to be set to true
 {% if 'files' in packetbeat_combined.logging %}
   files:
