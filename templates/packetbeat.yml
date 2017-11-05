@@ -203,7 +203,7 @@ packetbeat:
 {% if 'send_response' in packetbeat_combined.protocols.dns %}
       send_response: "{{ packetbeat_combined.protocols.dns.send_response }}"
 {% endif %}
-  
+
 {% if 'include_authorities' in packetbeat_combined.protocols.dns %}
       # include_authorities controls whether or not the dns.authorities field
       # (authority resource records) is added to messages.
@@ -257,7 +257,7 @@ packetbeat:
       # If this option is enabled, the raw message of the response (response
       # field) is sent to Elasticsearch. The default is false. This option is
       # useful when you want to index the whole response.
-      # 
+      #
       # Note that for HTTP, the body is not included by default, only the HTTP headers.
       send_response: "{{ packetbeat_combined.protocols.http.send_response }}"
 {% endif %}
@@ -276,7 +276,7 @@ packetbeat:
       # When this option is enabled, Packetbeat obscures the value of
       # Authorization and Proxy-Authorization HTTP headers, and censors those
       # strings in the response.
-      # 
+      #
       # You should set this option to true for transactions that use Basic
       # Authentication because they may contain the base64 unencrypted username
       # and password.
@@ -299,7 +299,7 @@ packetbeat:
       # The list of content types for which Packetbeat exports the full HTTP
       # payload. The HTTP body is available under http.request.body and
       # http.response.body for these Content-Types.
-      # 
+      #
       # In addition, if send_response option is enabled, then the HTTP body is
       # exported together with the HTTP headers under response and if
       # send_request enabled, then request contains the entire HTTP message
@@ -331,7 +331,7 @@ packetbeat:
       # an event for it. The default is 10485760 (10 MB).
       max_message_size: {{ packetbeat_combined.protocols.http.max_message_size }}
 {% endif %}
-  
+
 {% endif %}
 
 
@@ -350,7 +350,7 @@ packetbeat:
       # to accept unknown commands.
       # Note: All unknown commands MUST not contain any data parts!
       # Default: false
-      parseunknown: {{ packetbeat_combined.protocols.memcache.parseunknown }}
+      parseunknown: "{{ packetbeat_combined.protocols.memcache.parseunknown }}"
 
       # Update the maxvalue option to store the values - base64 encoded - in the
       # json output.
@@ -366,7 +366,7 @@ packetbeat:
       #       will be 4 times maxbytespervalue.
       # Default: unlimited
       maxbytespervalue: {{ packetbeat_combined.protocols.memcache.maxbytespervalue }}
-  
+
       # UDP transaction timeout in milliseconds.
       # Note: Quiet messages in UDP binary protocol will get response only in error case.
       #       The memcached analyzer will wait for udptransactiontimeout milliseconds
@@ -450,229 +450,445 @@ packetbeat:
 # Configure what outputs to use when sending the data collected by the beat.
 # Multiple outputs may be used.
 #
-{% if 'output' in packetbeat_combined %}
 output:
 
-{% if 'elasticsearch' in packetbeat_combined.output %}
-  # https://www.elastic.co/guide/en/beats/packetbeat/current/elasticsearch-output.html
-  elasticsearch:
-    # Array of hosts to connect to.
-    # Scheme and port can be left out and will be set to the default (http and 9200)
-    # In case you specify and additional path, the scheme is required: http://localhost:9200/path
-    # IPv6 addresses should always be defined as: https://[2001:db8::1]:9200
-    hosts: {{ packetbeat_combined.output.elasticsearch.hosts }}
 
-{% if 'protocol' in packetbeat_combined.output.elasticsearch %}
-    # Optional protocol and basic auth credentials.
-    protocol: "{{ packetbeat_combined.output.elasticsearch.protocol }}"
-    username: "{{ packetbeat_combined.output.elasticsearch.username }}"
-    password: "{{ packetbeat_combined.output.elasticsearch.password }}"
+
+{% if 'elasticsearch' in packetbeat_combined.output %}
+  #
+  #------------------------- Elasticsearch output -----------------------------
+  #
+  # https://www.elastic.co/guide/en/beats/filebeat/current/elasticsearch-output.html
+  elasticsearch:
+
+{% if 'enabled' in packetbeat_combined.output.elasticsearch %}
+    # The enabled config is a boolean setting to enable or disable the output.
+    # If set to false, the output is disabled.
+    #
+    # The default value is true.
+    enabled: "{{ packetbeat_combined.output.elasticsearch.enabled }}"
+{% endif %}
+
+{% if 'hosts' in packetbeat_combined.output.elasticsearch %}
+    # The list of Elasticsearch nodes to connect to. The events are distributed
+    # to these nodes in round robin order. If one node becomes unreachable, the
+    # event is automatically sent to another node. Each Elasticsearch node can
+    # be defined as a URL or IP:PORT. For example: http://192.15.3.2,
+    # https://es.found.io:9230 or 192.24.3.2:9300. If no port is specified,
+    # 9200 is used.
+    hosts: {{ packetbeat_combined.output.elasticsearch.hosts }}
+{% endif %}
+
+{% if 'compression_level' in packetbeat_combined.output.elasticsearch %}
+    # The gzip compression level. Setting this value to 0 disables compression.
+    # The compression level must be in the range of 1 (best speed) to 9 (best
+    # compression).
+    #
+    # Increasing the compression level will reduce the network usage but will
+    # increase the cpu usage.
+    #
+    # The default value is 0.
+    compression_level: {{ packetbeat_combined.output.elasticsearch.compression_level }}
 {% endif %}
 
 {% if 'worker' in packetbeat_combined.output.elasticsearch %}
-    # Number of workers per Elasticsearch host.
-    worker: "{{ packetbeat_combined.output.elasticsearch.worker }}"
+    # The number of workers per configured host publishing events to
+    # Elasticsearch. This is best used with load balancing mode enabled.
+    # Example: If you have 2 hosts and 3 workers, in total 6 workers are
+    # started (3 for each host).
+    worker: {{ packetbeat_combined.output.elasticsearch.worker }}
 {% endif %}
 
-{% if 'index' in packetbeat_combined.output.elasticsearch %}
-    # Optional index name. The default is "packetbeat" and generates
-    # [packetbeat-]YYYY.MM.DD keys.
-    index: "{{ packetbeat_combined.output.elasticsearch.worker }}"
+{% if 'username' in packetbeat_combined.output.elasticsearch %}
+    # The basic authentication username for connecting to Elasticsearch.
+    username: "{{ packetbeat_combined.output.elasticsearch.username }}"
 {% endif %}
 
-{% if 'template' in packetbeat_combined.output.elasticsearch %}
-    # A template is used to set the mapping in Elasticsearch
-    # By default template loading is disabled and no template is loaded.
-    # These settings can be adjusted to load your own template or overwrite existing ones
-    template:
+{% if 'password' in packetbeat_combined.output.elasticsearch %}
+    # The basic authentication password for connecting to Elasticsearch.
+    password: "{{ packetbeat_combined.output.elasticsearch.password }}"
+{% endif %}
 
-      # Template name. By default the template name is packetbeat.
-      name: "{{ packetbeat_combined.output.elasticsearch.template.name }}"
+{% if 'parameters' in packetbeat_combined.output.elasticsearch %}
+    # Dictionary of HTTP parameters to pass within the url with index operations.
+    parameters: {{ packetbeat_combined.output.elasticsearch.parameters }}
+{% endif %}
 
-      # Path to template file
-      path: "{{ packetbeat_combined.output.elasticsearch.template.path }}"
-
-      # Overwrite existing template
-      overwrite: "{{ packetbeat_combined.output.elasticsearch.template.overwrite }}"
+{% if 'protocol' in packetbeat_combined.output.elasticsearch %}
+    # The name of the protocol Elasticsearch is reachable on. The options
+    # are: http or https. The default is http. However, if you specify a URL
+    # for hosts, the value of protocol is overridden by whatever scheme you
+    # specify in the URL.
+    protocol: "{{ packetbeat_combined.output.elasticsearch.protocol }}"
 {% endif %}
 
 {% if 'path' in packetbeat_combined.output.elasticsearch %}
-    # Optional HTTP Path
+    # An HTTP path prefix that is prepended to the HTTP API calls. This is
+    # useful for the cases where Elasticsearch listens behind an HTTP reverse
+    # proxy that exports the API under a custom prefix.
     path: "{{ packetbeat_combined.output.elasticsearch.path }}"
 {% endif %}
 
+{% if 'headers' in packetbeat_combined.output.elasticsearch %}
+    # Custom HTTP headers to add to each request created by the Elasticsearch
+    # output. It is generally possible to specify multiple header values
+    # for the same header name by separating them with a comma.
+    headers: {{ packetbeat_combined.output.elasticsearch.headers }}
+{% endif %}
+
 {% if 'proxy_url' in packetbeat_combined.output.elasticsearch %}
-    # Proxy server url
+    # The URL of the proxy to use when connecting to the Elasticsearch servers.
+    # The value may be either a complete URL or a "host[:port]", in which case
+    # the "http" scheme is assumed. If a value is not specified through the
+    # configuration file then proxy environment variables are used. See the
+    # golang documentation for more information about the environment variables.
     proxy_url: "{{ packetbeat_combined.output.elasticsearch.proxy_url }}"
 {% endif %}
 
+{% if 'index' in packetbeat_combined.output.elasticsearch %}
+    # The index name to write events to. The default is "filebeat-%{+yyyy.MM.dd}"
+    # (for example, "filebeat-2015.04.26").
+    index: "{{ packetbeat_combined.output.elasticsearch.index }}"
+{% endif %}
+
+{% if 'indices' in packetbeat_combined.output.elasticsearch %}
+    # Array of index selector rules supporting conditionals, format string based
+    # field access and name mappings. The first rule matching will be used
+    # to set the index for the event to be published. If indices is missing
+    # or no rule matches, the index field will be used.
+    indices: {{ packetbeat_combined.output.elasticsearch.indices }}
+{% endif %}
+
+{% if 'pipeline' in packetbeat_combined.output.elasticsearch %}
+    # A format string value that specifies the ingest node pipeline to write events to.
+    pipeline: "{{ packetbeat_combined.output.elasticsearch.pipeline }}"
+{% endif %}
+
+{% if 'pipelines' in packetbeat_combined.output.elasticsearch %}
+    # Similar to the indices array, this is an array of pipeline selector
+    # configurations supporting conditionals, format string based field access
+    # and name mappings. The first rule matching will be used to set the
+    # pipeline for the event to be published. If pipelines is missing or no
+    # rule matches, the pipeline field will be used.
+    pipelines: {{ packetbeat_combined.output.elasticsearch.pipelines }}
+{% endif %}
+
+{% if 'template' in packetbeat_combined.output.elasticsearch %}
+    # The index template to use for setting mappings in Elasticsearch. By
+    # default, template loading is enabled.
+    template:
+
+{% if 'enabled' in packetbeat_combined.output.elasticsearch.template %}
+      # Set to false to disable template loading. If set this to false, you
+      # must load the template manually.s
+      enabled: "{{ packetbeat_combined.output.elasticsearch.template.enabled }}"
+{% endif %}
+
+{% if 'name' in packetbeat_combined.output.elasticsearch.template %}
+      # The name of the template. The default is filebeat.
+      name: "{{ packetbeat_combined.output.elasticsearch.template.name }}"
+{% endif %}
+
+{% if 'path' in packetbeat_combined.output.elasticsearch.template %}
+      # The path to the template file. The default is filebeat.template.json.
+      # If a relative path is set, it is considered relative to the config
+      # path. See the Directory Layout section for details.
+      path: "{{ packetbeat_combined.output.elasticsearch.template.path }}"
+{% endif %}
+
+{% if 'overwrite' in packetbeat_combined.output.elasticsearch.template %}
+      # A boolean that specifies whether to overwrite the existing template.
+      # The default is false.
+      overwrite: "{{ packetbeat_combined.output.elasticsearch.template.overwrite }}"
+{% endif %}
+{% endif %}
+
 {% if 'max_retries' in packetbeat_combined.output.elasticsearch %}
-    # The number of times a particular Elasticsearch index operation is attempted. If
-    # the indexing operation doesn't succeed after this many retries, the events are
-    # dropped. The default is 3.
+    # The number of times to retry publishing an event after a publishing
+    # failure. After the specified number of retries, the events are typically
+    # dropped. Some Beats, such as Filebeat, ignore the max_retries setting
+    # and retry until all events are published.
+    #
+    # Set max_retries to a value less than 0 to retry until all events are
+    # published.
+    #
+    # The default is 3.
     max_retries: {{ packetbeat_combined.output.elasticsearch.max_retries }}
 {% endif %}
 
 {% if 'bulk_max_size' in packetbeat_combined.output.elasticsearch %}
-    # The maximum number of events to bulk in a single Elasticsearch bulk API index request.
-    # The default is 50.
+    # The maximum number of events to bulk in a single Elasticsearch bulk API
+    # index request. The default is 50.
+    #
+    # If the Beat sends single events, the events are collected into batches.
+    # If the Beat publishes a large batch of events (larger than the value
+    # specified by bulk_max_size), the batch is split.
+    #
+    # Specifying a larger batch size can improve performance by lowering the
+    # overhead of sending events. However big batch sizes can also increase
+    # processing times, which might result in API errors, killed connections,
+    # timed-out publishing requests, and, ultimately, lower throughput.
+    #
+    # Setting bulk_max_size to values less than or equal to 0 disables buffering
+    # in libbeat. When buffering is disabled, Beats that publish single events
+    # (such as Packetbeat) send each event directly to Elasticsearch. Beats
+    # that publish data in batches (such as Filebeat) send events in batches
+    # based on the spooler size.
     bulk_max_size: {{ packetbeat_combined.output.elasticsearch.bulk_max_size }}
 {% endif %}
 
 {% if 'timeout' in packetbeat_combined.output.elasticsearch %}
-    # Configure http request timeout before failing an request to Elasticsearch.
+    # The http request timeout in seconds for the Elasticsearch request.
+    # The default is 90.
     timeout: {{ packetbeat_combined.output.elasticsearch.timeout }}
 {% endif %}
 
 {% if 'flush_interval' in packetbeat_combined.output.elasticsearch %}
-    # The number of seconds to wait for new events between two bulk API index requests.
-    # If `bulk_max_size` is reached before this interval expires, addition bulk index
-    # requests are made.
+    # The number of seconds to wait for new events between two bulk API index
+    # requests. If bulk_max_size is reached before this interval expires,
+    # additional bulk index requests are made.
     flush_interval: {{ packetbeat_combined.output.elasticsearch.flush_interval }}
 {% endif %}
 
-{% if 'save_topology' in packetbeat_combined.output.elasticsearch %}
-    # Boolean that sets if the topology is kept in Elasticsearch. The default is
-    # false. This option makes sense only for Packetbeat.
-    save_topology: {{ packetbeat_combined.output.elasticsearch.save_topology }}
+{% if 'ssl' in packetbeat_combined.output.elasticsearch %}
+    # https://www.elastic.co/guide/en/beats/filebeat/current/configuration-output-ssl.html
+    # ssl:
+      # certificate_authorities: ["/etc/pki/root/ca.pem"]
+      # certificate: "/etc/pki/client/cert.pem"
+      # key: "/etc/pki/client/cert.key"
 {% endif %}
 
-{% if 'topology_expire' in packetbeat_combined.output.elasticsearch %}
-    # The time to live in seconds for the topology information that is stored in
-    # Elasticsearch. The default is 15 seconds.
-    topology_expire: {{ packetbeat_combined.output.elasticsearch.topology_expire }}
-{% endif %}
-
-{% if 'tls' in packetbeat_combined.output.elasticsearch %}
-    # tls configuration. By default is off.
-    tls:
-      # List of root certificates for HTTPS server verifications
-      certificate_authorities: {{ packetbeat_combined.output.elasticsearch.tls.certificate_authorities }}
-
-      # Certificate for TLS client authentication
-      certificate: "{{ packetbeat_combined.output.elasticsearch.tls.certificate }}"
-
-      # Client Certificate Key
-      certificate_key: "{{ packetbeat_combined.output.elasticsearch.tls.certificate_key }}"
-
-      # Controls whether the client verifies server certificates and host name.
-      # If insecure is set to true, all server host names and certificates will be
-      # accepted. In this mode TLS based connections are susceptible to
-      # man-in-the-middle attacks. Use only for testing.
-      insecure: {{ packetbeat_combined.output.elasticsearch.tls.insecure }}
-
-      # Configure cipher suites to be used for TLS connections
-      cipher_suites: {{ packetbeat_combined.output.elasticsearch.tls.cipher_suites }}
-
-      # Configure curve types for ECDHE based cipher suites
-      curve_types: {{ packetbeat_combined.output.elasticsearch.tls.curve_types }}
-
-      # Configure minimum TLS version allowed for connection to logstash
-      min_version: {{ packetbeat_combined.output.elasticsearch.tls.min_version }}
-
-      # Configure maximum TLS version allowed for connection to logstash
-      max_version: {{ packetbeat_combined.output.elasticsearch.tls.max_version }}
-{% endif %}
 {% endif %}
 
 
 
 {% if 'logstash' in packetbeat_combined.output %}
-  # https://www.elastic.co/guide/en/beats/packetbeat/current/logstash-output.html
+  #
+  #------------------------- Logstash output -----------------------------
+  #
+  # https://www.elastic.co/guide/en/beats/filebeat/current/logstash-output.html
   logstash:
-    # The Logstash hosts
+
+{% if 'enabled' in packetbeat_combined.output.logstash %}
+    # The enabled config is a boolean setting to enable or disable the output.
+    # If set to false, the output is disabled.
+    #
+    # The default value is true.
+    enabled: "{{ packetbeat_combined.output.logstash.enabled }}"
+{% endif %}
+
+    # The list of known Logstash servers to connect to. If load balancing is
+    # disabled, but mutliple hosts are configured, one host is selected randomly
+    # (there is no precedence). If one host becomes unreachable, another one
+    # is selected randomly.
+    #
+    # All entries in this list can contain a port number. If no port number is
+    # given, the value specified for port is used as the default port number.
     hosts: {{ packetbeat_combined.output.logstash.hosts }}
 
-{% if 'worker' in packetbeat_combined.output.logstash %}
-    # Number of workers per Logstash host.
-    worker: 1
-{% endif %}
-
-{% if 'bulk_max_size' in packetbeat_combined.output.logstash %}
-    # The maximum number of events to bulk into a single batch window. The
-    # default is 2048.
-    bulk_max_size: {{ packetbeat_combined.output.logstash.bulk_max_size }}
-{% endif %}
-
 {% if 'compression_level' in packetbeat_combined.output.logstash %}
-    # Set gzip compression level.
-    compression_level: {{ packetbeat_combined.output.logstash.bulk_max_size }}
+    # The gzip compression level. Setting this value to 0 disables compression.
+    # The compression level must be in the range of 1 (best speed) to 9 (best
+    # compression).
+    #
+    # Increasing the compression level will reduce the network usage but will
+    # increase the cpu usage.
+    #
+    # The default value is 3.
+    compression_level: {{ packetbeat_combined.output.logstash.compression_level }}
+{% endif %}
+
+{% if 'worker' in packetbeat_combined.output.logstash %}
+    # The number of workers per configured host publishing events to Logstash.
+    # This is best used with load balancing mode enabled. Example: If you have
+    # 2 hosts and 3 workers, in total 6 workers are started (3 for each host).
+    worker: {{ packetbeat_combined.output.logstash.worker }}
 {% endif %}
 
 {% if 'loadbalance' in packetbeat_combined.output.logstash %}
-    # Optional load balance the events between the Logstash hosts
-    loadbalance: {{ packetbeat_combined.output.logstash.loadbalance }}
+    # If set to true and multiple Logstash hosts are configured, the output
+    # plugin load balances published events onto all Logstash hosts. If set to
+    # false, the output plugin sends all events to only one host (determined
+    # at random) and will switch to another host if the selected one becomes
+    # unresponsive.
+    #
+    # The default value is false.
+    loadbalance: "{{ packetbeat_combined.output.logstash.loadbalance }}"
+{% endif %}
+
+{% if 'pipelining' in packetbeat_combined.output.logstash %}
+    # Configures number of batches to be send asynchronously to logstash while
+    # waiting for ACK from logstash. Output only becomes blocking once number
+    # of pipelining batches have been written. Pipelining is disabled if a
+    # values of 0 is configured.
+    #
+    # The default value is 0.
+    pipelining: {{ packetbeat_combined.output.logstash.pipelining }}
+{% endif %}
+
+{% if 'proxy_url' in packetbeat_combined.output.logstash %}
+    # The URL of the SOCKS5 proxy to use when connecting to the Logstash servers.
+    # The value must be a URL with a scheme of socks5://. The protocol used
+    # to communicate to Logstash is not based on HTTP so a web-proxy cannot
+    # be used.
+    #
+    # If the SOCKS5 proxy server requires client authentication, then a
+    # username and password can be embedded in the URL as shown in the example.
+    #
+    # When using a proxy, hostnames are resolved on the proxy server instead of
+    # on the client. You can change this behavior by setting the
+    # proxy_use_local_resolver option.
+    proxy_url: "{{ packetbeat_combined.output.logstash.proxy_url }}"
+{% endif %}
+
+{% if 'proxy_use_local_resolver' in packetbeat_combined.output.logstash %}
+    # The proxy_use_local_resolver option determines if Logstash hostnames are
+    # resolved locally when using a proxy. The default value is false which
+    # means that when a proxy is used the name resolution occurs on the proxy
+    # server.
+    proxy_use_local_resolver: "{{ packetbeat_combined.output.logstash.proxy_use_local_resolver }}"
 {% endif %}
 
 {% if 'index' in packetbeat_combined.output.logstash %}
     # Optional index name. The default index name depends on the each beat.
     # For Packetbeat, the default is set to packetbeat, for Topbeat
     # top topbeat and for Filebeat to filebeat.
-    index: {{ packetbeat_combined.output.logstash.index }}
+    index: "{{ packetbeat_combined.output.logstash.index }}"
 {% endif %}
 
-{% if 'tls' in packetbeat_combined.output.logstash %}
-    # Optional TLS. By default is off.
-    tls:
-      
-      # List of root certificates for HTTPS server verifications
-      certificate_authorities: "{{ packetbeat_combined.output.logstash.tls.certificate_authorities }}"
-
-      # Certificate for TLS client authentication
-      certificate: "{{ packetbeat_combined.output.logstash.tls.certificate }}"
-
-      # Client Certificate Key
-      certificate_key: "{{ packetbeat_combined.output.logstash.tls.certificate_key }}"
-
-{% if 'insecure' in packetbeat_combined.output.logstash %}
-      # Controls whether the client verifies server certificates and host name.
-      # If insecure is set to true, all server host names and certificates will be
-      # accepted. In this mode TLS based connections are susceptible to
-      # man-in-the-middle attacks. Use only for testing.
-      insecure: {{ packetbeat_combined.output.logstash.tls.insecure }}
-{% endif %}
+{% if 'ssl' in packetbeat_combined.output.logstash %}
+    # https://www.elastic.co/guide/en/beats/filebeat/current/configuration-output-ssl.html
+    # ssl:
+      # certificate_authorities: ["/etc/pki/root/ca.pem"]
+      # certificate: "/etc/pki/client/cert.pem"
+      # key: "/etc/pki/client/cert.key"
 {% endif %}
 
-{% if 'logstash' in packetbeat_combined.output.logstash %}
-      # Configure cipher suites to be used for TLS connections
-      cipher_suites: {{ packetbeat_combined.output.logstash.tls.cipher_suites }}
+{% if 'timeout' in packetbeat_combined.output.logstash %}
+    # The number of seconds to wait for responses from the Logstash server
+    # before timing out.
+    #
+    # The default is 30 (seconds).
+    timeout: {{ packetbeat_combined.output.logstash.timeout }}
 {% endif %}
 
-{% if 'logstash' in packetbeat_combined.output.logstash %}
-      # Configure curve types for ECDHE based cipher suites
-      curve_types: {{ packetbeat_combined.output.logstash.tls.curve_types }}
+{% if 'max_retries' in packetbeat_combined.output.logstash %}
+    # The number of times to retry publishing an event after a publishing
+    # failure. After the specified number of retries, the events are
+    # typically dropped. Some Beats, such as Filebeat, ignore the max_retries
+    # setting and retry until all events are published.
+    #
+    # Set max_retries to a value less than 0 to retry until all events are published.
+    #
+    # The default is 3.
+    max_retries: {{ packetbeat_combined.output.logstash.max_retries }}
 {% endif %}
+
+{% if 'bulk_max_size' in packetbeat_combined.output.logstash %}
+    # The maximum number of events to bulk in a single Logstash request.
+    #
+    # The default is 2048.
+    #
+    # If the Beat sends single events, the events are collected into batches.
+    # If the Beat publishes a large batch of events (larger than the value
+    # specified by bulk_max_size), the batch is split.
+    #
+    # Specifying a larger batch size can improve performance by lowering the
+    # overhead of sending events. However big batch sizes can also increase
+    # processing times, which might result in API errors, killed connections,
+    # timed-out publishing requests, and, ultimately, lower throughput.
+    #
+    # Setting bulk_max_size to values less than or equal to 0 disables
+    # buffering in libbeat. When buffering is disabled, Beats that publish
+    # single events (such as Packetbeat) send each event directly to
+    # Elasticsearch. Beats that publish data in batches (such as Filebeat)
+    # send events in batches based on the spooler size.
+    bulk_max_size: {{ packetbeat_combined.output.logstash.bulk_max_size }}
+{% endif %}
+
+{% if 'slow_start' in packetbeat_combined.output.logstash %}
+    # If enabled only a subset of events in a batch of events is transferred
+    # per transaction. The number of events to be sent increases up to
+    # bulk_max_size if no error is encountered. On error the number of events
+    # per transaction is reduced again.
+    #
+    # The default is false.
+    slow_start: "{{ packetbeat_combined.output.logstash.slow_start }}"
+{% endif %}
+
 {% endif %}
 
 
 
 {% if 'file' in packetbeat_combined.output %}
-  ### File output
+  #
+  #------------------------- File output -----------------------------
+  #
+  # https://www.elastic.co/guide/en/beats/filebeat/current/file-output.html
   file:
+    # Enabled this?
+    enabled: "{{ packetbeat_combined.output.file.enabled }}"
+
     # Path to the directory where to save the generated files. The option is mandatory.
-    path: "/tmp/packetbeat"
+    path: "{{ packetbeat_combined.output.file.path }}"
 
-    # Name of the generated files. The default is `packetbeat` and it generates files: `packetbeat`, `packetbeat.1`, `packetbeat.2`, etc.
-    filename: packetbeat
+{% if 'filename' in packetbeat_combined.output.file %}
+    # Name of the generated files. The default is `filebeat` and it generates files: `filebeat`, `filebeat.1`, `filebeat.2`, etc.
+    filename: "{{ packetbeat_combined.output.file.filename }}"
+{% endif %}
 
+{% if 'rotate_every_kb' in packetbeat_combined.output.file %}
     # Maximum size in kilobytes of each file. When this size is reached, the files are
     # rotated. The default value is 10 MB.
-    rotate_every_kb: 10000
+    rotate_every_kb: {{ packetbeat_combined.output.file.rotate_every_kb }}
+{% endif %}
 
+{% if 'number_of_files' in packetbeat_combined.output.file %}
     # Maximum number of files under path. When this number of files is reached, the
     # oldest file is deleted and the rest are shifted from last to first. The default
     # is 7 files.
-    number_of_files: 7
+    number_of_files: {{ packetbeat_combined.output.file.number_of_files }}
 {% endif %}
+{% endif %}
+
 
 
 {% if 'console' in packetbeat_combined.output %}
-  ### Console output
+  #
+  #------------------------- Console output -----------------------------
+  #
+  # https://www.elastic.co/guide/en/beats/filebeat/current/console-output.html
   console:
-    # Pretty print json event
-    pretty: false
+{% if 'enabled' in packetbeat_combined.output.console %}
+    # The enabled config is a boolean setting to enable or disable the output.
+    # If set to false, the output is disabled.
+    #
+    # The default value is true.
+    enabled: "{{ packetbeat_combined.output.console.enabled }}"
 {% endif %}
+
+{% if 'pretty' in packetbeat_combined.output.console %}
+    # If pretty is set to true, events written to stdout will be nicely formatted.
+    #
+    # The default is false.
+    pretty: "{{ packetbeat_combined.output.console.pretty }}"
 {% endif %}
+
+{% if 'bulk_max_size' in packetbeat_combined.output.console %}
+    # The maximum number of events to buffer internally during publishing.
+    #
+    # The default is 2048.
+    #
+    # Specifying a larger batch size may add some latency and buffering during
+    # publishing. However, for Console output, this setting does not affect how
+    # events are published.
+    #
+    # Setting bulk_max_size to 0 disables buffering in libbeat.
+    bulk_max_size: {{ packetbeat_combined.output.console.bulk_max_size }}
+{% endif %}
+
+{% endif %}
+
 
 
 
@@ -699,11 +915,11 @@ logging:
 
   # Send all logging output to syslog. On Windows default is false, otherwise
   # default is true.
-  to_syslog: {{ packetbeat_combined.logging.to_syslog }}
+  to_syslog: "{{ packetbeat_combined.logging.to_syslog }}"
 
   # Write all logging output to files. Beats automatically rotate files if rotateeverybytes
   # limit is reached.
-  to_files: {{ packetbeat_combined.logging.to_files }}
+  to_files: "{{ packetbeat_combined.logging.to_files }}"
 
   # To enable logging to files, to_files option has to be set to true
 {% if 'files' in packetbeat_combined.logging %}
@@ -725,7 +941,7 @@ logging:
   # Enable metrics recording
 {% if 'metrics' in packetbeat_combined.logging %}
   metrics:
-    enabled: {{ packetbeat_combined.logging.metrics.enabled }}
+    enabled: "{{ packetbeat_combined.logging.metrics.enabled }}"
     period: {{ packetbeat_combined.logging.metrics.period }}
 {% endif %}
 {% endif %}

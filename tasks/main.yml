@@ -20,12 +20,13 @@
 
 - name: Update apt cache
   apt: update_cache=yes
+  when: "packetbeat_combined.version == '5.x'"
 
 - name: Install from repo (if choosing the latest version)
   apt:
     name: packetbeat
     state: installed
-  when: "packetbeat_combined.version == 'latest'"
+  when: "packetbeat_combined.version == '5.x'"
 
 - name: Get the platform (i386 or amd64) of the virtual machine
   command: dpkg --print-architecture
@@ -39,11 +40,11 @@
   get_url:
     url={{ elastic_url }}/downloads/beats/packetbeat/packetbeat-{{ packetbeat_combined.version }}-{{ platform }}.deb
     dest=/opt/packetbeat.deb
-  when: "packetbeat_combined.version != 'latest'"
+  when: "packetbeat_combined.version != '5.x'"
 
 - name: Install from deb (if choosing a specific version)
   apt: deb=/opt/packetbeat.deb
-  when: "packetbeat_combined.version != 'latest'"
+  when: "packetbeat_combined.version != '5.x'"
 
 # http://docs.ansible.com/ansible/latest/template_module.html
 - name: Copy config file
@@ -53,6 +54,7 @@
     owner: root
     group: root
     mode: 0644
+  when: "packetbeat_combined.install_only != 'true'"
 
 - name: Restart Packetbeat
   service:

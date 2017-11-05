@@ -6,12 +6,13 @@ elastic_url: "https://artifacts.elastic.co"
 
 # Overload variables using the dict named packetbeat
 packetbeat:
-  version: "latest"
+  version: "5.x"
 
 packetbeat_defaults:
   daemon: "packetbeat"
-  version: "latest"
+  version: "5.x"
   config_include_dir: "/etc/packetbeat/"
+  install_only: "false"
 
   # https://www.elastic.co/guide/en/beats/packetbeat/current/configuration-general.html
   # name: ""
@@ -112,49 +113,83 @@ packetbeat_defaults:
   output:
     # https://www.elastic.co/guide/en/beats/packetbeat/current/elasticsearch-output.html
     elasticsearch:
-      hosts: '["localhost:9200"]'
-      # protocol: "https"
-      # username: "elastic"
-      # password: "changeme"
-      # worker: 1
-      # index: "packetbeat"
-      # template:
-        # name: "packetbeat"
-        # path: "packetbeat.template.json"
-        # overwrite: "false"
-      # path: "/elasticsearch"
-      # proxy_url: http://proxy:3128
-      # max_retries: 3
-      # bulk_max_size: 50
-      # timeout: 90
-      # flush_interval: 1
-      # save_topology: false
-      # topology_expire: 15
-      # tls:
+      enabled: "false"
+      hosts: ""
+      compression_level: 0
+      worker: 1
+      username: ""
+      password: ""
+      parameters: {}
+      protocol: "http"
+      path: ""
+      headers: {}
+      proxy_url: ""
+      index: 'packetbeat-%{+yyyy.MM.dd}'
+      indices: {}
+      pipeline: ""
+      pipelines: {}
+      template:
+        enabled: "true"
+        name: "packetbeat"
+        path: "packetbeat.template.json"
+        overwrite: "false"
+        version:
+          2x:
+            enabled: "false"
+            path: "packetbeat.template-es2x.json"
+          6x:
+            enabled: "false"
+            path: "packetbeat.template-es6x.json"
+      max_retries: 3
+      bulk_max_size: 50
+      timeout: 90
+      flush_interval: ""
+      # https://www.elastic.co/guide/en/beats/packetbeat/current/configuration-output-ssl.html
+      # ssl:
         # certificate_authorities: ["/etc/pki/root/ca.pem"]
         # certificate: "/etc/pki/client/cert.pem"
-        # certificate_key: "/etc/pki/client/cert.key"
-        # insecure: true
-        # cipher_suites: []
-        # curve_types: []
-        # min_version: 1.0
-        # max_version: 1.2
+        # key: "/etc/pki/client/cert.key"
 
     # https://www.elastic.co/guide/en/beats/packetbeat/current/logstash-output.html
-    # logstash:
-      # hosts: '["localhost:9200"]'
-      # worker: 1
-      # bulk_max_size: 2048
-      # compression_level: 3
-      # loadbalance: "true"
-      # index: "packetbeat"
-      # tls:
+    logstash:
+      enabled: "true"
+      hosts: '["localhost:5044"]'
+      compression_level: 3
+      worker: 1
+      loadbalance: "true"
+      pipelining: 0
+      proxy_url: ""
+      proxy_use_local_resolver: "false"
+      index: "packetbeat"
+      # https://www.elastic.co/guide/en/beats/packetbeat/current/configuration-output-ssl.html
+      # ssl:
         # certificate_authorities: ["/etc/pki/root/ca.pem"]
         # certificate: "/etc/pki/client/cert.pem"
-        # certificate_key: "/etc/pki/client/cert.key"
-        # insecure: true
-        # cipher_suites: []
-        # curve_types: []
+        # key: "/etc/pki/client/cert.key"
+      timeout: 30
+      max_retries: 3
+      bulk_max_size: 2048
+      slow_start: "false"
+      
+    kafka:
+      enabled: "false"
+      
+    redis:
+      enabled: "false"
+
+    # https://www.elastic.co/guide/en/beats/packetbeat/current/file-output.html
+    file:
+      enabled: "false"
+      path: "/tmp/packetbeat"
+      filename: "packetbeat"
+      rotate_every_kb: 10240
+      number_of_files: 7
+
+    # https://www.elastic.co/guide/en/beats/packetbeat/current/console-output.html
+    console:
+      enabled: "false"
+      pretty: "false"
+      bulk_max_size: 2048
  
   # https://www.elastic.co/guide/en/beats/packetbeat/current/configuration-logging.html
   logging:
@@ -167,6 +202,6 @@ packetbeat_defaults:
       name: "packetbeat.log"
       rotateeverybytes: 10485760
       keepfiles: 7
-    metrics:
-      enabled: "true"
-      period: "30s"
+    # metrics:
+      # enabled: "true"
+      # period: "30s"
