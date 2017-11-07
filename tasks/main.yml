@@ -46,6 +46,12 @@
   apt: deb=/opt/packetbeat.deb
   when: "packetbeat_combined.version != '5.x'"
 
+# http://docs.ansible.com/ansible/latest/service_module.html
+- name: Make sure Packetbeat autostarts
+  service:
+    name: packetbeat
+    enabled: yes
+
 # http://docs.ansible.com/ansible/latest/template_module.html
 - name: Copy config file
   template:
