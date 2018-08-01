@@ -1,6 +1,0 @@
----
-- name: restart packetbeat
-  service:
-    name: "{{ packetbeat_combined.daemon }}"
-    state: restarted
-    sleep: 5
