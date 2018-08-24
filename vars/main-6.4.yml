@@ -1,0 +1,248 @@
+---
+
+packetbeat_defaults:
+  daemon: "packetbeat"
+  version: "6.4.0"
+  config_include_dir: "/etc/packetbeat/"
+  install_only: false
+  install_repo: true
+
+  # https://www.elastic.co/guide/en/beats/packetbeat/6.4/configuration-general.html
+  name: ""
+  tags: ""
+  fields: ""
+  fields_under_root: false
+  queue_size: 1000
+  bulk_queue_size: 0
+  max_procs: ""
+
+  # https://www.elastic.co/guide/en/beats/packetbeat/6.4/configuration-interfaces.html
+  interfaces:
+    device: "any"
+
+    # Optional
+    snaplen: 65535
+    type: "pcap"
+    buffer_size_mb: 30
+    with_vlans: ""
+    bpf_filter: ""
+    ignore_outgoing: ""
+
+  # https://www.elastic.co/guide/en/beats/packetbeat/6.4/configuration-protocols.html
+  protocols:
+    icmp:
+      enabled: false
+    dns:
+      enabled: false
+      ports: '[53]'
+      send_request:  false
+      send_response: false
+      include_authorities: true
+      include_additionals: true
+    http:
+      enabled: false
+      ports: '[80]'
+      send_response: true
+      send_request: true
+      transaction_timeout: ""
+      hide_keywords: '["pass", "password", "passwd"]'
+      redact_authorization: true
+      send_headers: '["User-Agent", "Cookie", "Set-Cookie"]'
+      send_all_headers: false
+      include_body_for: '["text/html"]'
+      split_cookie: true
+      real_ip_header: "X-Forwarded-For"
+      max_message_size: 10485760
+    amqp:
+      enabled: false
+      max_body_length: 1000
+      parse_headers: true
+      parse_arguments: true
+      hide_connection_information: true
+    cassandra:
+      enabled: false
+    memcache:
+      enabled: false
+      ports: '[11211]'
+      parseunknown: true
+      maxvalues: 0
+      maxbytespervalue: -1
+      udptransactiontimeout: 200
+    mysql:
+      enabled: false
+      ports: '[3306]'
+    redis:
+      enabled: false
+      ports: '[6379]'
+    pgsql:
+      enabled: false
+      ports: '[5432]'
+    thrift:
+      enabled: false
+      ports: '[9090]'
+    mongodb:
+      enabled: false
+      ports: '[27017]'
+
+  # https://www.elastic.co/guide/en/beats/packetbeat/6.4/configuration-processes.html
+  # procs:
+    #  enabled: false
+    #  monitored:
+    #    - process: mysqld
+    #      cmdline_grep: mysqld
+    #
+    #    - process: pgsql
+    #      cmdline_grep: postgres
+    #
+    #    - process: nginx
+    #      cmdline_grep: nginx
+    #
+    #    - process: app
+    #      cmdline_grep: gunicorn
+
+  output:
+    # https://www.elastic.co/guide/en/beats/packetbeat/6.4/elasticsearch-output.html
+    elasticsearch:
+      enabled: false
+      hosts:
+        - "127.0.0.1:9200"
+      compression_level: 0
+      worker: 1
+      protocol: "http" # "https"
+      username: "" # "elastic"
+      password: "" # "changeme"
+      parameters: []
+      index: "" # "packetbeat-%{[beat.version]}-%{+yyyy.MM.dd}"
+      indices: []
+      pipeline: ""
+      pipelines: []
+      max_retires: 3
+      path: ""
+      headers: []
+      proxy_url: ""
+      bulk_max_size: 50
+      timeout: 90
+      ssl: []
+
+    # https://www.elastic.co/guide/en/beats/packetbeat/6.4/logstash-output.html
+    logstash:
+      enabled: false
+      hosts:
+        - "localhost:5044"
+      worker: 1
+      compression_level: 3
+      ttl: "10s"
+      loadbalance: false
+      pipelining: 0
+      slow_start: false
+      backoff:
+        init: "1s"
+        max: "60s"
+      index: "packetbeat"
+      proxy_url: ""
+      proxy_use_local_resolver: false
+      ssl: []
+
+    # https://www.elastic.co/guide/en/beats/packetbeat/6.4/kafka-output.html
+    kafka:
+      enabled: false
+      hosts:
+        - "127.0.0.1:9092"
+      topic: "packetbeat"
+      key: ''
+      partition:
+        hash:
+          reachable_only: false
+          hash: []
+      username: ''
+      password: ''
+      version: '0.10.0'
+      metadata:
+        retry:
+          max: 3
+          backoff: 250ms
+        refresh_frequency: 10m
+      worker: 1
+      max_retires: 3
+      bulk_max_size: 2048
+      timeout: "30s"
+      broker_timeout: "10s"
+      channel_buffer_size: 256
+      keep_alive: 0
+      compression: "gzip"
+      max_message_bytes: 1000000
+      required_acks: 1
+      client_id: "beats"
+      ssl: []
+      
+    redis: []
+
+    # https://www.elastic.co/guide/en/beats/packetbeat/6.4/file-output.html
+    file:
+      enabled: false
+      path: "/tmp/packetbeat"
+      filename: "packetbeat"
+      rotate_every_kb: 10240
+      number_of_files: 7
+
+    # https://www.elastic.co/guide/en/beats/packetbeat/6.4/console-output.html
+    console:
+      enabled: false
+      pretty: false
+      bulk_max_size: 2048
+
+  # https://www.elastic.co/guide/en/beats/packetbeat/6.4/configuration-path.html
+  paths:
+    home: ""
+    config: ""
+    data: ""
+    logs: ""
+
+  setup:
+    # https://www.elastic.co/guide/en/beats/packetbeat/6.4/configuration-dashboards.html
+    dashboards:
+      enabled: false
+      directory: '${path.home}/kibana'
+      url: ""
+      file: ""
+      beat: "packetbeat"
+      kibana_index: ".kibana"
+      index: "packetbeat-*"
+      always_kibana: true
+      retry.enabled: true
+
+    # https://www.elastic.co/guide/en/beats/packetbeat/6.4/configuration-template.html
+    template:
+      enabled: false
+      name: "packetbeat"
+      pattern: "packetbeat-*"
+      fields: "${path.config}/fields.yml"
+      overwrite: false
+      settings: []
+
+    # https://www.elastic.co/guide/en/beats/packetbeat/6.4/setup-kibana-endpoint.html
+    kibana:
+      host: "127.0.0.1:5601"
+      protocol: "http"
+      usernamee: ""
+      password: ""
+      path: ""
+      ssl: []
+
+  # https://www.elastic.co/guide/en/beats/packetbeat/6.4/configuration-logging.html
+  logging:
+    level: "info"
+    selectors: '["*"]'
+    to_syslog: false
+    to_files: true
+    files:
+      path: "/var/log/packetbeat/"
+      name: "packetbeat"
+      rotateeverybytes: 10485760 # = 10MB
+      keepfiles: 7
+    metrics:
+      enabled: false
+      period: "30s"
+      
+  xpack: []
+  http: []
