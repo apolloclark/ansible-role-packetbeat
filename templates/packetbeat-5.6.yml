@@ -65,8 +65,6 @@ packetbeat:
 
 
 
-
-
   ########################### Interfaces ########################################
   #
   # https://www.elastic.co/guide/en/beats/packetbeat/current/configuration-interfaces.html
@@ -139,8 +137,6 @@ packetbeat:
     # packetbeat.ignore_outgoing option on one of the servers.
     ignore_outgoing: "{{ packetbeat_combined.interfaces.ignore_outgoing }}"
 {% endif %}
-
-
 
 
 
@@ -410,10 +406,7 @@ packetbeat:
       # the MongoDB protocol by commenting out the list of ports.
       ports: {{ packetbeat_combined.protocols.mongodb.ports }}
 {% endif %}
-
 {% endif %}
-
-
 
 
 
@@ -440,8 +433,6 @@ packetbeat:
         cmdline_grep: {{ program.cmdline_grep }}
 {% endfor %}
 {% endif %}
-
-
 
 
 
@@ -888,8 +879,6 @@ output:
 {% endif %}
 
 {% endif %}
-
-
 
 
 
