@@ -15,6 +15,8 @@ You can overload the variables by creating a dictionary called "packetbeat", ex:
     packetbeat:
       version: "6.4.0"
 
+Use `version: 6.x` to get the latest minor release.
+
 ## Dependencies
 
 None.

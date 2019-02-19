@@ -1,13 +1,18 @@
 ---
+#
 # https://docs.ansible.com/ansible/latest/modules/set_fact_module.html
 - name: Get the simplified major.minor version string
   set_fact:
-    version_simple: "{{ packetbeat.version | regex_replace('^([0-9])\\.([0-9]*).*', '\\1.\\2') }}"
+    version_simple: "{{ packetbeat.version | regex_replace('^([0-9]+)\\.([0-9x]+).*', '\\1.\\2') }}"
 
 # https://docs.ansible.com/ansible/latest/modules/include_vars_module.html
 - name: Include defaults for configuration, per the requested version.
   include_vars:
-    file: main-{{ version_simple }}.yml
+    file: "{{ lookup('first_found', configs, paths='vars') }}"
+  vars:
+    configs:
+      - "vars/main-{{ version_simple }}.yml"
+      - "vars/main-{{ version_simple | regex_replace('^([0-9]+)\\..*', '\\1') }}.x.yml"
 
 # http://docs.ansible.com/ansible/latest/set_fact_module.html
 - name: Merge packetbeat_default and packetbeat variables
@@ -52,7 +57,11 @@
 # https://docs.ansible.com/ansible/latest/modules/apt_module.html
 - name: Install from repo (if choosing the 5.6.x or 6.x version)
   apt:
-    name: "packetbeat={{ packetbeat_combined.version }}"
+    name: >-
+      {{
+        'packetbeat' if version_simple is match('[0-9]+\.x.*')
+        else 'packetbeat=' + packetbeat_combined.version
+      }}
     state: present
   when:
     - packetbeat_combined.version is version('5.6', '>=')
@@ -93,13 +102,18 @@
 # http://docs.ansible.com/ansible/latest/template_module.html
 - name: Copy config file
   template:
-    src: "packetbeat-{{ version_simple }}.yml"
+    src: "{{ lookup('first_found', config_files, paths='templates') }}"
     dest: "{{ packetbeat_combined.config_include_dir }}/packetbeat.yml"
     owner: root
     group: root
     mode: 0644
   when:
     - not packetbeat_combined.install_only
+  vars:
+    config_files:
+      - "templates/packetbeat-{{ version_simple }}.yml"
+      - "templates/packetbeat-{{ version_simple | regex_replace('([0-9]+)\\..*', '\\1') }}.x.yml"
+    version: "{{ version_simple if version_simple is not search('x') else 'latest' }}"
 
 # https://docs.ansible.com/ansible/latest/modules/command_module.html
 # https://www.elastic.co/guide/en/beats/packetbeat/6.2/configuration-template.html

@@ -2,7 +2,7 @@
 ################### Packetbeat Configuration Example ##########################
 
 # This file contains an overview of various configuration settings. Please consult
-# the docs at https://www.elastic.co/guide/en/beats/packetbeat/6.3/packetbeat-configuration.html
+# the docs at https://www.elastic.co/guide/en/beats/packetbeat/latest/packetbeat-configuration.html
 # for more details.
 
 # The Packetbeat shipper works by sniffing the network traffic between your
@@ -11,7 +11,7 @@
 
 #============================== Network device ================================
 #
-# https://www.elastic.co/guide/en/beats/packetbeat/6.3/configuration-interfaces.html
+# https://www.elastic.co/guide/en/beats/packetbeat/latest/configuration-interfaces.html
 #
 packetbeat.interfaces:
 
@@ -106,7 +106,7 @@ packetbeat.interfaces:
 
 #========================== Transaction protocols =============================
 #
-# https://www.elastic.co/guide/en/beats/packetbeat/6.3/configuration-protocols.html
+# https://www.elastic.co/guide/en/beats/packetbeat/latest/configuration-protocols.html
 #
 {% if 'protocols' in packetbeat_combined %}
 packetbeat.protocols:
@@ -114,7 +114,7 @@ packetbeat.protocols:
   {% if 'icmp' in packetbeat_combined.protocols %}
   #------------------------------------ ICMP -----------------------------------
   #
-  # https://www.elastic.co/guide/en/beats/packetbeat/6.3/configuration-protocols.html#_icmp_configuration_options
+  # https://www.elastic.co/guide/en/beats/packetbeat/latest/configuration-protocols.html#_icmp_configuration_options
   - type: icmp
     {% if 'enabled' in packetbeat_combined.protocols.icmp %}
     # The ICMP protocol can be enabled/disabled via this option.
@@ -128,7 +128,7 @@ packetbeat.protocols:
   {% if 'dns' in packetbeat_combined.protocols %}
   #------------------------------------- DNS -----------------------------------
   #
-  # https://www.elastic.co/guide/en/beats/packetbeat/6.3/configuration-protocols.html#_dns_configuration_options
+  # https://www.elastic.co/guide/en/beats/packetbeat/latest/configuration-protocols.html#_dns_configuration_options
   - type: dns
 
     {% if 'enabled' in packetbeat_combined.protocols.dns %}
@@ -178,7 +178,7 @@ packetbeat.protocols:
   {% if 'http' in packetbeat_combined.protocols %}
   #--------------------------------- HTTP --------------------------------------
   #
-  # https://www.elastic.co/guide/en/beats/packetbeat/6.3/configuration-protocols.html#_http_configuration_options
+  # https://www.elastic.co/guide/en/beats/packetbeat/latest/configuration-protocols.html#_http_configuration_options
   - type: http
 
     {% if 'enabled' in packetbeat_combined.protocols.http %}
@@ -262,7 +262,7 @@ packetbeat.protocols:
     {% if 'split_cookie' in packetbeat_combined.protocols.http %}
     # If the Cookie or Set-Cookie headers are sent, this option controls
     # whether they are split into individual values.
-    # 
+    #
     # The default is false.
     split_cookie: "{{ packetbeat_combined.protocols.http.split_cookie }}"
     {% endif %}
@@ -288,7 +288,7 @@ packetbeat.protocols:
   {% if 'memcache' in packetbeat_combined.protocols %}
   #------------------------------- Memcache ------------------------------------
   #
-  # https://www.elastic.co/guide/en/beats/packetbeat/6.3/configuration-protocols.html#_memcache_configuration_options
+  # https://www.elastic.co/guide/en/beats/packetbeat/latest/configuration-protocols.html#_memcache_configuration_options
   - type: memcache
 
     # Configure the ports where to listen for memcache traffic. You can disable
@@ -375,11 +375,11 @@ packetbeat.protocols:
 # lines.
 #
 packetbeat.procs:
-  
+
   {% if 'enabled' in packetbeat_combined.procs %}
   enabled: {{ packetbeat_combined.procs.enabled }}
   {% endif %}
-  
+
   monitored:
     {% for program in packetbeat_combined.procs.monitored %}
     - process: {{ program.process }}
@@ -396,7 +396,7 @@ packetbeat.procs:
 ########################### General ########################################
 #
 #
-# https://www.elastic.co/guide/en/beats/packetbeat/6.3/configuration-general.html
+# https://www.elastic.co/guide/en/beats/packetbeat/latest/configuration-general.html
 #
 packetbeat:
 
@@ -435,7 +435,7 @@ packetbeat:
 
   {% if 'queue_size' in packetbeat_combined and
          packetbeat_combined.queue_size %}
-  # The internal queue size for single events in the processing pipeline. 
+  # The internal queue size for single events in the processing pipeline.
   # The default value is 1000.
   queue_size: {{ packetbeat_combined.queue_size }}
   {% endif %}
@@ -553,18 +553,18 @@ packetbeat:
 
 #================================ Outputs ======================================
 #
-# https://www.elastic.co/guide/en/beats/packetbeat/6.3/configuring-output.html
+# https://www.elastic.co/guide/en/beats/packetbeat/latest/configuring-output.html
 #
 # Configure what output to use when sending the data collected by the beat.
 
-{% if 'elasticsearch' in packetbeat_combined.output and 
+{% if 'elasticsearch' in packetbeat_combined.output and
        packetbeat_combined.output.elasticsearch %}
 #-------------------------- Elasticsearch output -------------------------------
 #
-# https://www.elastic.co/guide/en/beats/packetbeat/6.3/elasticsearch-output.html
+# https://www.elastic.co/guide/en/beats/packetbeat/latest/elasticsearch-output.html
 #
 output.elasticsearch:
-  
+
   {% if 'enabled' in packetbeat_combined.output.elasticsearch %}
   # Boolean flag to enable or disable the output module.
   enabled: {{ packetbeat_combined.output.elasticsearch.enabled }}
@@ -594,17 +594,17 @@ output.elasticsearch:
   protocol: "{{ packetbeat_combined.output.elasticsearch.protocol }}"
   {% endif %}
 
-  {% if 'username' in packetbeat_combined.output.elasticsearch and 
+  {% if 'username' in packetbeat_combined.output.elasticsearch and
          packetbeat_combined.output.elasticsearch.username %}
   username: "{{ packetbeat_combined.output.elasticsearch.username }}"
   {% endif %}
 
-  {% if 'password' in packetbeat_combined.output.elasticsearch and 
+  {% if 'password' in packetbeat_combined.output.elasticsearch and
          packetbeat_combined.output.elasticsearch.password %}
   password: "{{ packetbeat_combined.output.elasticsearch.password }}"
   {% endif %}
 
-  {% if 'parameters' in packetbeat_combined.output.elasticsearch and 
+  {% if 'parameters' in packetbeat_combined.output.elasticsearch and
          packetbeat_combined.output.elasticsearch.parameters %}
   # Dictionary of HTTP parameters to pass within the url with index operations.
   parameters:
@@ -617,7 +617,7 @@ output.elasticsearch:
   worker: {{ packetbeat_combined.output.elasticsearch.worker }}
   {% endif %}
 
-  {% if 'index' in packetbeat_combined.output.elasticsearch and 
+  {% if 'index' in packetbeat_combined.output.elasticsearch and
          packetbeat_combined.output.elasticsearch.index %}
   # Optional index name. The default is "beat-index-prefix" plus date
   # and generates [beat-index-prefix-]YYYY.MM.DD keys.
@@ -625,7 +625,7 @@ output.elasticsearch:
   index: "{{ packetbeat_combined.output.elasticsearch.index }}"
   {% endif %}
 
-  {% if 'indices' in packetbeat_combined.output.elasticsearch and 
+  {% if 'indices' in packetbeat_combined.output.elasticsearch and
          packetbeat_combined.output.elasticsearch.indices %}
   # Array of hosts to connect to.
   # Scheme and port can be left out and will be set to the default (http and 9200)
@@ -637,32 +637,32 @@ output.elasticsearch:
   {% endfor %}
   {% endif %}
 
-  {% if 'pipeline' in packetbeat_combined.output.elasticsearch and 
+  {% if 'pipeline' in packetbeat_combined.output.elasticsearch and
          packetbeat_combined.output.elasticsearch.pipeline %}
   # Optional ingest node pipeline. By default no pipeline will be used.
   pipeline: "{{ packetbeat_combined.output.elasticsearch.pipeline }}"
   {% endif %}
 
-  {% if 'pipelines' in packetbeat_combined.output.elasticsearch and 
+  {% if 'pipelines' in packetbeat_combined.output.elasticsearch and
          packetbeat_combined.output.elasticsearch.pipelines %}
   # Optional ingest node pipeline. By default no pipeline will be used.
   pipelines: "{{ packetbeat_combined.output.elasticsearch.pipelines }}"
   {% endif %}
 
-  {% if 'path' in packetbeat_combined.output.elasticsearch and 
+  {% if 'path' in packetbeat_combined.output.elasticsearch and
          packetbeat_combined.output.elasticsearch.path %}
   # Optional HTTP Path
   path: "{{ packetbeat_combined.output.elasticsearch.path }}"
   {% endif %}
 
-  {% if 'headers' in packetbeat_combined.output.elasticsearch and 
+  {% if 'headers' in packetbeat_combined.output.elasticsearch and
          packetbeat_combined.output.elasticsearch.headers %}
   # Custom HTTP headers to add to each request
   headers:
     - X-My-Header: Contents of the header
   {% endif %}
 
-  {% if 'proxy_url' in packetbeat_combined.output.elasticsearch and 
+  {% if 'proxy_url' in packetbeat_combined.output.elasticsearch and
          packetbeat_combined.output.elasticsearch.proxy_url %}
   # Proxy server url
   proxy_url: "{{ packetbeat_combined.output.elasticsearch.proxy_url }}"
@@ -689,7 +689,7 @@ output.elasticsearch:
   timeout: {{ packetbeat_combined.output.elasticsearch.timeout }}
   {% endif %}
 
-  {% if 'ssl' in packetbeat_combined.output.elasticsearch and 
+  {% if 'ssl' in packetbeat_combined.output.elasticsearch and
          packetbeat_combined.output.elasticsearch.ssl %}
   # Use SSL settings for HTTPS.
   #ssl:
@@ -704,37 +704,37 @@ output.elasticsearch:
     # List of supported/valid TLS versions. By default all TLS versions 1.0 up to
     # 1.2 are enabled.
     #supported_protocols: [TLSv1.0, TLSv1.1, TLSv1.2]
-  
+
     # SSL configuration. By default is off.
     # List of root certificates for HTTPS server verifications
     #certificate_authorities: ["/etc/pki/root/ca.pem"]
-  
+
     # Certificate for SSL client authentication
     #certificate: "/etc/pki/client/cert.pem"
-  
+
     # Client Certificate Key
     #key: "/etc/pki/client/cert.key"
-  
+
     # Optional passphrase for decrypting the Certificate Key.
     #key_passphrase: ''
-  
+
     # Configure cipher suites to be used for SSL connections
     #cipher_suites: []
-  
+
     # Configure curve types for ECDHE based cipher suites
     #curve_types: []
-  
+
     # Configure what types of renegotiation are supported. Valid options are
     # never, once, and freely. Default is never.
     #renegotiation: never
   {% endif %}
 {% endif %}
 
-{% if 'logstash' in packetbeat_combined.output and 
+{% if 'logstash' in packetbeat_combined.output and
        packetbeat_combined.output.logstash %}
 #----------------------------- Logstash output ---------------------------------
 #
-# https://www.elastic.co/guide/en/beats/packetbeat/6.3/logstash-output.html
+# https://www.elastic.co/guide/en/beats/packetbeat/latest/logstash-output.html
 #
 output.logstash:
 
@@ -796,7 +796,7 @@ output.logstash:
   {% if 'backoff' in packetbeat_combined.output.logstash and
          packetbeat_combined.output.logstash.hosts %}
   backoff:
-    
+
     {% if 'init' in packetbeat_combined.output.logstash.backoff and
            packetbeat_combined.output.logstash.backoff.init %}
     # The number of seconds to wait before trying to reconnect to Logstash
@@ -844,41 +844,41 @@ output.logstash:
     # susceptible to man-in-the-middle attacks. Use only for testing. Default is
     # `full`.
     #ssl.verification_mode: full
-  
+
     # List of supported/valid TLS versions. By default all TLS versions 1.0 up to
     # 1.2 are enabled.
     #ssl.supported_protocols: [TLSv1.0, TLSv1.1, TLSv1.2]
-  
+
     # Optional SSL configuration options. SSL is off by default.
     # List of root certificates for HTTPS server verifications
     #ssl.certificate_authorities: ["/etc/pki/root/ca.pem"]
-  
+
     # Certificate for SSL client authentication
     #ssl.certificate: "/etc/pki/client/cert.pem"
-  
+
     # Client Certificate Key
     #ssl.key: "/etc/pki/client/cert.key"
-  
+
     # Optional passphrase for decrypting the Certificate Key.
     #ssl.key_passphrase: ''
-  
+
     # Configure cipher suites to be used for SSL connections
     #ssl.cipher_suites: []
-  
+
     # Configure curve types for ECDHE based cipher suites
     #ssl.curve_types: []
-  
+
     # Configure what types of renegotiation are supported. Valid options are
     # never, once, and freely. Default is never.
     #ssl.renegotiation: never
   {% endif %}
 {% endif %}
 
-{% if 'kafka' in packetbeat_combined.output and 
+{% if 'kafka' in packetbeat_combined.output and
    packetbeat_combined.output.kafka %}
 #------------------------------- Kafka output ----------------------------------
 #
-# https://www.elastic.co/guide/en/beats/packetbeat/6.3/kafka-output.html
+# https://www.elastic.co/guide/en/beats/packetbeat/latest/kafka-output.html
 #
 output.kafka:
 
@@ -887,7 +887,7 @@ output.kafka:
   enabled: {{ packetbeat_combined.output.kafka.enabled }}
   {% endif %}
 
-  {% if 'hosts' in packetbeat_combined.output.kafka and 
+  {% if 'hosts' in packetbeat_combined.output.kafka and
      packetbeat_combined.output.kafka.hosts %}
   # The list of Kafka broker addresses from where to fetch the cluster metadata.
   # The cluster metadata contain the actual Kafka brokers events are published
@@ -898,28 +898,28 @@ output.kafka:
   {% endfor %}
   {% endif %}
 
-  {% if 'topic' in packetbeat_combined.output.kafka and 
+  {% if 'topic' in packetbeat_combined.output.kafka and
      packetbeat_combined.output.kafka.topic %}
   # The Kafka topic used for produced events. The setting can be a format string
   # using any event field. To set the topic from document type use `%{[type]}`.
   topic: '{{ packetbeat_combined.output.kafka.topic }}'
   {% endif %}
 
-  {% if 'key' in packetbeat_combined.output.kafka and 
+  {% if 'key' in packetbeat_combined.output.kafka and
      packetbeat_combined.output.kafka.key %}
   # The Kafka event key setting. Use format string to create unique event key.
   # By default no event key will be generated.
   key: '{{ packetbeat_combined.output.kafka.key }}'
   {% endif %}
 
-  {% if 'partition' in packetbeat_combined.output.kafka and 
+  {% if 'partition' in packetbeat_combined.output.kafka and
      packetbeat_combined.output.kafka.partition %}
   # The Kafka event partitioning strategy. Default hashing strategy is `hash`
   # using the `output.kafka.key` setting or randomly distributes events if
   # `output.kafka.key` is not configured.
   partition:
 
-    {% if 'hash' in packetbeat_combined.output.kafka.partition and 
+    {% if 'hash' in packetbeat_combined.output.kafka.partition and
        packetbeat_combined.output.kafka.partition.hash %}
     hash:
 
@@ -928,8 +928,8 @@ output.kafka:
       # leaders. Default is false.
       reachable_only: {{ packetbeat_combined.output.kafka.partition.hash.reachable_only }}
       {% endif %}
-  
-      {% if 'key' in packetbeat_combined.output.kafka.partition.hash and 
+
+      {% if 'key' in packetbeat_combined.output.kafka.partition.hash and
          packetbeat_combined.output.kafka.partition.hash.hash %}
       # Configure alternative event field names used to compute the hash value.
       # If empty `output.kafka.key` setting will be used.
@@ -940,60 +940,60 @@ output.kafka:
   {% endif %}
 
   # Authentication details. Password is required if username is set.
-  {% if 'username' in packetbeat_combined.output.kafka and 
+  {% if 'username' in packetbeat_combined.output.kafka and
      packetbeat_combined.output.kafka.username %}
   username: '{{ packetbeat_combined.output.kafka.username }}'
   {% endif %}
 
-  {% if 'password' in packetbeat_combined.output.kafka and 
+  {% if 'password' in packetbeat_combined.output.kafka and
      packetbeat_combined.output.kafka.password %}
   password: '{{ packetbeat_combined.output.kafka.password }}'
   {% endif %}
 
-  {% if 'version' in packetbeat_combined.output.kafka and 
+  {% if 'version' in packetbeat_combined.output.kafka and
      packetbeat_combined.output.kafka.version %}
   # Kafka version beatname is assumed to run against. Defaults to the oldest
   # supported stable version (currently version 0.8.2.0)
   version: {{ packetbeat_combined.output.kafka.version }}
   {% endif %}
 
-  {% if 'metadata' in packetbeat_combined.output.kafka and 
+  {% if 'metadata' in packetbeat_combined.output.kafka and
      packetbeat_combined.output.kafka.metadata %}
   # Metadata update configuration. Metadata do contain leader information
   # deciding which broker to use when publishing.
   metadata:
 
-    {% if 'retry' in packetbeat_combined.output.kafka.metadata and 
+    {% if 'retry' in packetbeat_combined.output.kafka.metadata and
        packetbeat_combined.output.kafka.metadata.retry %}
     retry:
-      {% if 'max' in packetbeat_combined.output.kafka.metadata.retry and 
+      {% if 'max' in packetbeat_combined.output.kafka.metadata.retry and
          packetbeat_combined.output.kafka.metadata.retry.max %}
       # Max metadata request retry attempts when cluster is in middle of leader
       # election. Defaults to 3 retries.
       max: {{ packetbeat_combined.output.kafka.metadata.retry.max }}
       {% endif %}
 
-      {% if 'backoff' in packetbeat_combined.output.kafka.metadata.retry and 
+      {% if 'backoff' in packetbeat_combined.output.kafka.metadata.retry and
          packetbeat_combined.output.kafka.metadata.retry.backoff %}
       # Waiting time between retries during leader elections. Default is 250ms.
       backoff: {{ packetbeat_combined.output.kafka.metadata.retry.backoff }}
       {% endif %}
     {% endif %}
-  
-    {% if 'refresh_frequency' in packetbeat_combined.output.kafka.metadata.retry and 
+
+    {% if 'refresh_frequency' in packetbeat_combined.output.kafka.metadata.retry and
        packetbeat_combined.output.kafka.metadata.retry.refresh_frequency %}
     # Refresh metadata interval. Defaults to every 10 minutes.
     refresh_frequency: {{ packetbeat_combined.output.kafka.metadata.retry.refresh_frequency }}
     {% endif %}
   {% endif %}
 
-  {% if 'worker' in packetbeat_combined.output.kafka and 
+  {% if 'worker' in packetbeat_combined.output.kafka and
      packetbeat_combined.output.kafka.worker %}
   # The number of concurrent load-balanced Kafka output workers.
   worker: {{ packetbeat_combined.output.kafka.worker }}
   {% endif %}
 
-  {% if 'max_retries' in packetbeat_combined.output.kafka and 
+  {% if 'max_retries' in packetbeat_combined.output.kafka and
      packetbeat_combined.output.kafka.max_retries %}
   # The number of times to retry publishing an event after a publishing failure.
   # After the specified number of retries, the events are typically dropped.
@@ -1003,48 +1003,48 @@ output.kafka:
   max_retries: {{ packetbeat_combined.output.kafka.max_retries }}
   {% endif %}
 
-  {% if 'bulk_max_size' in packetbeat_combined.output.kafka and 
+  {% if 'bulk_max_size' in packetbeat_combined.output.kafka and
      packetbeat_combined.output.kafka.bulk_max_size %}
   # The maximum number of events to bulk in a single Kafka request. The default
   # is 2048.
   bulk_max_size: {{ packetbeat_combined.output.kafka.bulk_max_size }}
   {% endif %}
 
-  {% if 'timeout' in packetbeat_combined.output.kafka and 
+  {% if 'timeout' in packetbeat_combined.output.kafka and
      packetbeat_combined.output.kafka.timeout %}
   # The number of seconds to wait for responses from the Kafka brokers before
   # timing out. The default is 30s.
   timeout: {{ packetbeat_combined.output.kafka.timeout }}
   {% endif %}
 
-  {% if 'broker_timeout' in packetbeat_combined.output.kafka and 
+  {% if 'broker_timeout' in packetbeat_combined.output.kafka and
      packetbeat_combined.output.kafka.broker_timeout %}
   # The maximum duration a broker will wait for number of required ACKs. The
   # default is 10s.
   broker_timeout: {{ packetbeat_combined.output.kafka.broker_timeout }}
   {% endif %}
 
-  {% if 'channel_buffer_size' in packetbeat_combined.output.kafka and 
+  {% if 'channel_buffer_size' in packetbeat_combined.output.kafka and
      packetbeat_combined.output.kafka.channel_buffer_size %}
   # The number of messages buffered for each Kafka broker. The default is 256.
   channel_buffer_size: {{ packetbeat_combined.output.kafka.channel_buffer_size }}
   {% endif %}
 
-  {% if 'keep_alive' in packetbeat_combined.output.kafka and 
+  {% if 'keep_alive' in packetbeat_combined.output.kafka and
      packetbeat_combined.output.kafka.keep_alive %}
   # The keep-alive period for an active network connection. If 0s, keep-alives
   # are disabled. The default is 0 seconds.
   keep_alive: {{ packetbeat_combined.output.kafka.keep_alive }}
   {% endif %}
 
-  {% if 'compression' in packetbeat_combined.output.kafka and 
+  {% if 'compression' in packetbeat_combined.output.kafka and
      packetbeat_combined.output.kafka.compression %}
   # Sets the output compression codec. Must be one of none, snappy and gzip. The
   # default is gzip.
   compression: {{ packetbeat_combined.output.kafka.compression }}
   {% endif %}
 
-  {% if 'max_message_bytes' in packetbeat_combined.output.kafka and 
+  {% if 'max_message_bytes' in packetbeat_combined.output.kafka and
      packetbeat_combined.output.kafka.max_message_bytes %}
   # The maximum permitted size of JSON-encoded messages. Bigger messages will be
   # dropped. The default value is 1000000 (bytes). This value should be equal to
@@ -1052,7 +1052,7 @@ output.kafka:
   max_message_bytes: {{ packetbeat_combined.output.kafka.max_message_bytes }}
   {% endif %}
 
-  {% if 'required_acks' in packetbeat_combined.output.kafka and 
+  {% if 'required_acks' in packetbeat_combined.output.kafka and
      packetbeat_combined.output.kafka.required_acks %}
   # The ACK reliability level required from broker. 0=no response, 1=wait for
   # local commit, -1=wait for all replicas to commit. The default is 1.  Note:
@@ -1061,59 +1061,59 @@ output.kafka:
   required_acks: {{ packetbeat_combined.output.kafka.required_acks }}
   {% endif %}
 
-  {% if 'client_id' in packetbeat_combined.output.kafka and 
+  {% if 'client_id' in packetbeat_combined.output.kafka and
      packetbeat_combined.output.kafka.client_id %}
   # The configurable ClientID used for logging, debugging, and auditing
   # purposes.  The default is "beats".
   client_id: "{{ packetbeat_combined.output.kafka.client_id }}"
   {% endif %}
 
-  {% if 'ssl' in packetbeat_combined.output.kafka and 
+  {% if 'ssl' in packetbeat_combined.output.kafka and
      packetbeat_combined.output.kafka.ssl %}
   # Enable SSL support. SSL is automatically enabled, if any SSL setting is set.
   #ssl:
     #enabled: true
-  
+
     # Optional SSL configuration options. SSL is off by default.
     # List of root certificates for HTTPS server verifications
     #certificate_authorities: ["/etc/pki/root/ca.pem"]
-  
+
     # Configure SSL verification mode. If `none` is configured, all server hosts
     # and certificates will be accepted. In this mode, SSL based connections are
     # susceptible to man-in-the-middle attacks. Use only for testing. Default is
     # `full`.
     #verification_mode: full
-  
+
     # List of supported/valid TLS versions. By default all TLS versions 1.0 up to
     # 1.2 are enabled.
     #supported_protocols: [TLSv1.0, TLSv1.1, TLSv1.2]
-  
+
     # Certificate for SSL client authentication
     #certificate: "/etc/pki/client/cert.pem"
-  
+
     # Client Certificate Key
     #key: "/etc/pki/client/cert.key"
-  
+
     # Optional passphrase for decrypting the Certificate Key.
     #key_passphrase: ''
-  
+
     # Configure cipher suites to be used for SSL connections
     #cipher_suites: []
-  
+
     # Configure curve types for ECDHE based cipher suites
     #curve_types: []
-  
+
     # Configure what types of renegotiation are supported. Valid options are
     # never, once, and freely. Default is never.
     #renegotiation: never
   {% endif %}
 {% endif %}
 
-{% if 'redis' in packetbeat_combined.output and 
+{% if 'redis' in packetbeat_combined.output and
        packetbeat_combined.output.redis %}
 #------------------------------- Redis output ----------------------------------
 #
-# https://www.elastic.co/guide/en/beats/packetbeat/6.3/redis-output.html
+# https://www.elastic.co/guide/en/beats/packetbeat/latest/redis-output.html
 #
 #output.redis:
   # Boolean flag to enable or disable the output module.
@@ -1216,11 +1216,11 @@ output.kafka:
   #ssl.renegotiation: never
 {% endif %}
 
-{% if 'file' in packetbeat_combined.output and 
+{% if 'file' in packetbeat_combined.output and
        packetbeat_combined.output.file %}
 #------------------------------- File output -----------------------------------
 #
-# https://www.elastic.co/guide/en/beats/packetbeat/6.3/file-output.html
+# https://www.elastic.co/guide/en/beats/packetbeat/latest/file-output.html
 #
 #output.file:
   # Boolean flag to enable or disable the output module.
@@ -1248,11 +1248,11 @@ output.kafka:
   #permissions: 0600
 {% endif %}
 
-{% if 'console' in packetbeat_combined.output and 
+{% if 'console' in packetbeat_combined.output and
        packetbeat_combined.output.console %}
 #----------------------------- Console output ---------------------------------
 #
-# https://www.elastic.co/guide/en/beats/packetbeat/6.3/console-output.html
+# https://www.elastic.co/guide/en/beats/packetbeat/latest/console-output.html
 #
 #output.console:
   # Boolean flag to enable or disable the output module.
@@ -1298,11 +1298,11 @@ output.kafka:
 
 
 
-{% if 'dashboards' in packetbeat_combined.setup and 
+{% if 'dashboards' in packetbeat_combined.setup and
    packetbeat_combined.setup.dashboards %}
 #============================== Dashboards =====================================
 #
-# https://www.elastic.co/guide/en/beats/packetbeat/6.3/configuration-dashboards.html
+# https://www.elastic.co/guide/en/beats/packetbeat/latest/configuration-dashboards.html
 #
 # These settings control loading the sample dashboards to the Kibana index. Loading
 # the dashboards are disabled by default and can be enabled either by setting the
@@ -1313,28 +1313,28 @@ setup.dashboards:
   enabled: {{ packetbeat_combined.setup.dashboards.enabled }}
   {% endif %}
 
-  {% if 'directory' in packetbeat_combined.setup.dashboards and 
+  {% if 'directory' in packetbeat_combined.setup.dashboards and
          packetbeat_combined.setup.dashboards.directory %}
   # The directory from where to read the dashboards. The default is the `kibana`
   # folder in the home path.
   directory: {{ packetbeat_combined.setup.dashboards.directory }}
   {% endif %}
 
-  {% if 'url' in packetbeat_combined.setup.dashboards and 
+  {% if 'url' in packetbeat_combined.setup.dashboards and
          packetbeat_combined.setup.dashboards.url %}
   # The URL from where to download the dashboards archive. It is used instead of
   # the directory if it has a value.
   url: "{{ packetbeat_combined.setup.dashboards.url }}"
   {% endif %}
 
-  {% if 'file' in packetbeat_combined.setup.dashboards and 
+  {% if 'file' in packetbeat_combined.setup.dashboards and
         packetbeat_combined.setup.dashboards.file %}
   # The  file archive (zip file) from where to read the dashboards. It is used instead
   # of the directory when it has a value.
   file: "{{ packetbeat_combined.setup.dashboards.file }}"
   {% endif %}
 
-  {% if 'beat' in packetbeat_combined.setup.dashboards and 
+  {% if 'beat' in packetbeat_combined.setup.dashboards and
       packetbeat_combined.setup.dashboards.beat %}
   # In case the archive contains the dashboards from multiple Beats, this lets you
   # select which one to load. You can load all the dashboards in the archive by
@@ -1342,13 +1342,13 @@ setup.dashboards:
   beat: "{{ packetbeat_combined.setup.dashboards.beat }}"
   {% endif %}
 
-  {% if 'kibana_index' in packetbeat_combined.setup.dashboards and 
+  {% if 'kibana_index' in packetbeat_combined.setup.dashboards and
          packetbeat_combined.setup.dashboards.kibana_index %}
   # The name of the Kibana index to use for setting the configuration. Default is ".kibana"
   kibana_index: "{{ packetbeat_combined.setup.dashboards.kibana_index }}"
   {% endif %}
 
-  {% if 'index' in packetbeat_combined.setup.dashboards and 
+  {% if 'index' in packetbeat_combined.setup.dashboards and
          packetbeat_combined.setup.dashboards.index %}
   # The Elasticsearch index name. This overwrites the index name defined in the
   # dashboards and index pattern. Example: testbeat-*
@@ -1378,37 +1378,37 @@ setup.dashboards:
   # Template name. By default the template name is "packetbeat-%{[beat.version]}"
   # The template name and pattern has to be set in case the elasticsearch index pattern is modified.
   #name: "packetbeat-%{[beat.version]}"
-  
+
   # Template pattern. By default the template pattern is "-%{[beat.version]}-*" to apply to the default index settings.
   # The first part is the version of the beat and then -* is used to match all daily indices.
   # The template name and pattern has to be set in case the elasticsearch index pattern is modified.
   #pattern: "packetbeat-%{[beat.version]}-*"
-  
+
   # Path to fields.yml file to generate the template
   #fields: "${path.config}/fields.yml"
-  
+
   # Overwrite existing template
   #overwrite: false
-  
+
   # Elasticsearch template settings
   #settings:
-  
+
     # A dictionary of settings to place into the settings.index dictionary
     # of the Elasticsearch template. For more details, please check
-    # https://www.elastic.co/guide/en/elasticsearch/reference/6.3/mapping.html
+    # https://www.elastic.co/guide/en/elasticsearch/reference/latest/mapping.html
     #index:
       #number_of_shards: 1
       #codec: best_compression
       #number_of_routing_shards: 30
-  
+
     # A dictionary of settings for the _source field. For more details, please check
-    # https://www.elastic.co/guide/en/elasticsearch/reference/6.3/mapping-source-field.html
+    # https://www.elastic.co/guide/en/elasticsearch/reference/latest/mapping-source-field.html
     #_source:
       #enabled: false
 
 
 
-{% if 'kibana' in packetbeat_combined.setup and 
+{% if 'kibana' in packetbeat_combined.setup and
    packetbeat_combined.setup.kibana %}
 #============================== Kibana =====================================
 
@@ -1416,7 +1416,7 @@ setup.dashboards:
 # This requires a Kibana endpoint configuration.
 setup.kibana:
 
-  {% if 'host' in packetbeat_combined.setup.kibana and 
+  {% if 'host' in packetbeat_combined.setup.kibana and
          packetbeat_combined.setup.kibana.host %}
   # Kibana Host
   # Scheme and port can be left out and will be set to the default (http and 5601)
@@ -1425,29 +1425,29 @@ setup.kibana:
   host: "{{ packetbeat_combined.setup.kibana.host }}"
   {% endif %}
 
-  {% if 'protocol' in packetbeat_combined.setup.kibana and 
+  {% if 'protocol' in packetbeat_combined.setup.kibana and
          packetbeat_combined.setup.kibana.protocol %}
   # Optional protocol and basic auth credentials.
   protocol: "{{ packetbeat_combined.setup.kibana.protocol }}"
   {% endif %}
 
-  {% if 'username' in packetbeat_combined.setup.kibana and 
+  {% if 'username' in packetbeat_combined.setup.kibana and
          packetbeat_combined.setup.kibana.username %}
   username: "{{ packetbeat_combined.setup.kibana.username }}"
   {% endif %}
 
-  {% if 'password' in packetbeat_combined.setup.kibana and 
+  {% if 'password' in packetbeat_combined.setup.kibana and
          packetbeat_combined.setup.kibana.password %}
   password: "{{ packetbeat_combined.setup.kibana.password }}"
   {% endif %}
 
-  {% if 'path' in packetbeat_combined.setup.kibana and 
+  {% if 'path' in packetbeat_combined.setup.kibana and
          packetbeat_combined.setup.kibana.path %}
   # Optional HTTP Path
   path: "{{ packetbeat_combined.setup.kibana.path }}"
   {% endif %}
 
-  {% if 'ssl' in packetbeat_combined.setup.kibana and 
+  {% if 'ssl' in packetbeat_combined.setup.kibana and
          packetbeat_combined.setup.kibana.ssl %}
   # Use SSL settings for HTTPS. Default is true.
   #ssl:
@@ -1458,27 +1458,27 @@ setup.kibana:
     # susceptible to man-in-the-middle attacks. Use only for testing. Default is
     # `full`.
     #verification_mode: full
-  
+
     # List of supported/valid TLS versions. By default all TLS versions 1.0 up to
     # 1.2 are enabled.
     #supported_protocols: [TLSv1.0, TLSv1.1, TLSv1.2]
-  
+
     # SSL configuration. By default is off.
     # List of root certificates for HTTPS server verifications
     #certificate_authorities: ["/etc/pki/root/ca.pem"]
-  
+
     # Certificate for SSL client authentication
     #certificate: "/etc/pki/client/cert.pem"
-  
+
     # Client Certificate Key
     #key: "/etc/pki/client/cert.key"
-  
+
     # Optional passphrase for decrypting the Certificate Key.
     #key_passphrase: ''
-  
+
     # Configure cipher suites to be used for SSL connections
     #cipher_suites: []
-  
+
     # Configure curve types for ECDHE based cipher suites
     #curve_types: []
   {% endif %}
@@ -1486,21 +1486,21 @@ setup.kibana:
 
 
 
-{% if 'logging' in packetbeat_combined and 
+{% if 'logging' in packetbeat_combined and
    packetbeat_combined.logging %}
 #================================ Logging ======================================
 # There are four options for the log output: file, stderr, syslog, eventlog
 # The file output is the default.
 logging:
 
-  {% if 'level' in packetbeat_combined.logging and 
+  {% if 'level' in packetbeat_combined.logging and
          packetbeat_combined.logging.level %}
   # Sets log level. The default log level is info.
   # Available log levels are: error, warning, info, debug
   level: "{{ packetbeat_combined.logging.level }}"
   {% endif %}
 
-  {% if 'selectors' in packetbeat_combined.logging and 
+  {% if 'selectors' in packetbeat_combined.logging and
          packetbeat_combined.logging.selectors %}
   # Enable debug output for selected components. To enable all selectors use ["*"]
   # Other available selectors are "beat", "publish", "service"
@@ -1518,7 +1518,7 @@ logging:
   to_eventlog: {{ packetbeat_combined.logging.to_eventlog }}
   {% endif %}
 
-  {% if 'metrics' in packetbeat_combined.logging and 
+  {% if 'metrics' in packetbeat_combined.logging and
          packetbeat_combined.logging.metrics %}
   # If enabled, beatname periodically logs its internal metrics that have changed
   # in the last period. For each metric that changed, the delta from the value at
@@ -1530,50 +1530,50 @@ logging:
     enabled: {{ packetbeat_combined.logging.metrics.enabled }}
     {% endif %}
 
-    {% if 'period' in packetbeat_combined.logging.metrics and 
+    {% if 'period' in packetbeat_combined.logging.metrics and
            packetbeat_combined.logging.metrics.period %}
     # The period after which to log the internal metrics. The default is 30s.
     period: {{ packetbeat_combined.logging.metrics.period }}
     {% endif %}
   {% endif %}
-  
+
   {% if 'to_files' in packetbeat_combined.logging %}
   # Logging to rotating files. Set to_files to false to disable logging to
   # files.
   to_files: {{ packetbeat_combined.logging.to_files }}
   {% endif %}
-  
-  {% if 'files' in packetbeat_combined.logging and 
+
+  {% if 'files' in packetbeat_combined.logging and
          packetbeat_combined.logging.files %}
   files:
 
-    {% if 'path' in packetbeat_combined.logging.files and 
+    {% if 'path' in packetbeat_combined.logging.files and
        packetbeat_combined.logging.files.path %}
     # Configure the path where the logs are written. The default is the logs directory
     # under the home path (the binary location).
     path: {{ packetbeat_combined.logging.files.path }}
     {% endif %}
-  
-    {% if 'name' in packetbeat_combined.logging.files and 
+
+    {% if 'name' in packetbeat_combined.logging.files and
        packetbeat_combined.logging.files.name %}
     # The name of the files where the logs are written to.
     name: "{{ packetbeat_combined.logging.files.name }}"
     {% endif %}
-  
-    {% if 'rotateeverybytes' in packetbeat_combined.logging.files and 
+
+    {% if 'rotateeverybytes' in packetbeat_combined.logging.files and
        packetbeat_combined.logging.files.rotateeverybytes %}
     # Configure log file size limit. If limit is reached, log file will be
     # automatically rotated
     rotateeverybytes: {{ packetbeat_combined.logging.files.rotateeverybytes }}
     {% endif %}
-  
-    {% if 'keepfiles' in packetbeat_combined.logging.files and 
+
+    {% if 'keepfiles' in packetbeat_combined.logging.files and
        packetbeat_combined.logging.files.keepfiles %}
     # Number of rotated log files to keep. Oldest files will be deleted first.
     keepfiles: {{ packetbeat_combined.logging.files.keepfiles }}
     {% endif %}
-  
-    {% if 'permissions' in packetbeat_combined.logging.files and 
+
+    {% if 'permissions' in packetbeat_combined.logging.files and
        packetbeat_combined.logging.files.permissions %}
     # The permissions mask to apply when rotating log files. The default value is 0600.
     # Must be a valid Unix-style file permissions mask expressed in octal notation.

@@ -2,12 +2,11 @@
 
 packetbeat_defaults:
   daemon: "packetbeat"
-  version: "6.3.0"
   config_include_dir: "/etc/packetbeat/"
   install_only: false
   install_repo: true
 
-  # https://www.elastic.co/guide/en/beats/packetbeat/6.3/configuration-general.html
+  # https://www.elastic.co/guide/en/beats/packetbeat/latest/configuration-general.html
   name: ""
   tags: ""
   fields: ""
@@ -16,7 +15,7 @@ packetbeat_defaults:
   bulk_queue_size: 0
   max_procs: ""
 
-  # https://www.elastic.co/guide/en/beats/packetbeat/6.3/configuration-interfaces.html
+  # https://www.elastic.co/guide/en/beats/packetbeat/latest/configuration-interfaces.html
   interfaces:
     device: "any"
 
@@ -28,7 +27,7 @@ packetbeat_defaults:
     bpf_filter: ""
     ignore_outgoing: ""
 
-  # https://www.elastic.co/guide/en/beats/packetbeat/6.3/configuration-protocols.html
+  # https://www.elastic.co/guide/en/beats/packetbeat/latest/configuration-protocols.html
   protocols:
     icmp:
       enabled: false
@@ -84,7 +83,7 @@ packetbeat_defaults:
       enabled: false
       ports: '[27017]'
 
-  # https://www.elastic.co/guide/en/beats/packetbeat/6.3/configuration-processes.html
+  # https://www.elastic.co/guide/en/beats/packetbeat/latest/configuration-processes.html
   # procs:
     #  enabled: false
     #  monitored:
@@ -101,7 +100,7 @@ packetbeat_defaults:
     #      cmdline_grep: gunicorn
 
   output:
-    # https://www.elastic.co/guide/en/beats/packetbeat/6.3/elasticsearch-output.html
+    # https://www.elastic.co/guide/en/beats/packetbeat/latest/elasticsearch-output.html
     elasticsearch:
       enabled: false
       hosts:
@@ -124,7 +123,7 @@ packetbeat_defaults:
       timeout: 90
       ssl: []
 
-    # https://www.elastic.co/guide/en/beats/packetbeat/6.3/logstash-output.html
+    # https://www.elastic.co/guide/en/beats/packetbeat/latest/logstash-output.html
     logstash:
       enabled: false
       hosts:
@@ -143,7 +142,7 @@ packetbeat_defaults:
       proxy_use_local_resolver: false
       ssl: []
 
-    # https://www.elastic.co/guide/en/beats/packetbeat/6.3/kafka-output.html
+    # https://www.elastic.co/guide/en/beats/packetbeat/latest/kafka-output.html
     kafka:
       enabled: false
       hosts:
@@ -174,10 +173,10 @@ packetbeat_defaults:
       required_acks: 1
       client_id: "beats"
       ssl: []
-      
+
     redis: []
 
-    # https://www.elastic.co/guide/en/beats/packetbeat/6.3/file-output.html
+    # https://www.elastic.co/guide/en/beats/packetbeat/latest/file-output.html
     file:
       enabled: false
       path: "/tmp/packetbeat"
@@ -185,13 +184,13 @@ packetbeat_defaults:
       rotate_every_kb: 10240
       number_of_files: 7
 
-    # https://www.elastic.co/guide/en/beats/packetbeat/6.3/console-output.html
+    # https://www.elastic.co/guide/en/beats/packetbeat/latest/console-output.html
     console:
       enabled: false
       pretty: false
       bulk_max_size: 2048
 
-  # https://www.elastic.co/guide/en/beats/packetbeat/6.3/configuration-path.html
+  # https://www.elastic.co/guide/en/beats/packetbeat/latest/configuration-path.html
   paths:
     home: ""
     config: ""
@@ -199,7 +198,7 @@ packetbeat_defaults:
     logs: ""
 
   setup:
-    # https://www.elastic.co/guide/en/beats/packetbeat/6.3/configuration-dashboards.html
+    # https://www.elastic.co/guide/en/beats/packetbeat/latest/configuration-dashboards.html
     dashboards:
       enabled: false
       directory: '${path.home}/kibana'
@@ -211,7 +210,7 @@ packetbeat_defaults:
       always_kibana: true
       retry.enabled: true
 
-    # https://www.elastic.co/guide/en/beats/packetbeat/6.3/configuration-template.html
+    # https://www.elastic.co/guide/en/beats/packetbeat/latest/configuration-template.html
     template:
       enabled: false
       name: "packetbeat"
@@ -220,7 +219,7 @@ packetbeat_defaults:
       overwrite: false
       settings: []
 
-    # https://www.elastic.co/guide/en/beats/packetbeat/6.3/setup-kibana-endpoint.html
+    # https://www.elastic.co/guide/en/beats/packetbeat/latest/setup-kibana-endpoint.html
     kibana:
       host: "127.0.0.1:5601"
       protocol: "http"
@@ -229,7 +228,7 @@ packetbeat_defaults:
       path: ""
       ssl: []
 
-  # https://www.elastic.co/guide/en/beats/packetbeat/6.3/configuration-logging.html
+  # https://www.elastic.co/guide/en/beats/packetbeat/latest/configuration-logging.html
   logging:
     level: "info"
     selectors: '["*"]'
@@ -243,6 +242,6 @@ packetbeat_defaults:
     metrics:
       enabled: false
       period: "30s"
-      
+
   xpack: []
   http: []
